@@ -21,7 +21,7 @@ def send_email():
         return jsonify({'error': 'Faltan datos'}), 400
 
     message = Mail(
-        from_email='tucorreo@tuweb.com',
+        from_email='tucorreo@tuweb.com',  # Cambia a tu correo verificado en SendGrid
         to_emails=email,
         subject='Tus resultados del test de personalidad',
         html_content=f"""
@@ -29,7 +29,8 @@ def send_email():
         <p><strong>Tu resultado:</strong></p>
         <p>{resultado}</p>
         <p>Este resultado es orientativo y no sustituye una evaluación profesional.</p>
-        """)
+        """
+    )
 
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
@@ -38,5 +39,7 @@ def send_email():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# 👇 ESTA LÍNEA ES CRUCIAL para Render
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
