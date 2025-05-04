@@ -1,0 +1,4 @@
+flask
+sendgrid
+python-dotenv
+flask-cors

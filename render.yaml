@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: test-personalidad-api
+    env: python
+    buildCommand: ""
+    startCommand: "python app.py"
+    envVars:
+      - key: SENDGRID_API_KEY
+        value: TU_API_KEY_AQUI

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Personalidad</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h1 class="text-center mb-4">Test de Personalidad Breve</h1>
+
+    <form id="testForm">
+      <div class="mb-3">
+        <label class="form-label">1. Me siento cómodo compartiendo mis emociones.</label>
+        <select class="form-select" name="q1">
+          <option value="1">Nada de acuerdo</option>
+          <option value="2">Poco de acuerdo</option>
+          <option value="3">Neutral</option>
+          <option value="4">De acuerdo</option>
+          <option value="5">Totalmente de acuerdo</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">2. Suelo planear a largo plazo.</label>
+        <select class="form-select" name="q2">
+          <option value="1">Nada de acuerdo</option>
+          <option value="2">Poco de acuerdo</option>
+          <option value="3">Neutral</option>
+          <option value="4">De acuerdo</option>
+          <option value="5">Totalmente de acuerdo</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="terms" required>
+        <label class="form-check-label" for="terms">
+          Acepto los <a href="#" target="_blank">términos y condiciones</a> y la <a href="#" target="_blank">política de privacidad</a>.
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Ver resultado (0.50€)</button>
+    </form>
+
+    <div id="paymentSection" class="mt-4 d-none">
+      <p>Para recibir tu análisis completo, coopera con 0.50€:</p>
+      <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success">Pagar ahora</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('testForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const q1 = parseInt(formData.get('q1'));
+      const q2 = parseInt(formData.get('q2'));
+      const email = formData.get('email');
+
+      const score = q1 + q2;
+      let result = '';
+      if (score <= 4) {
+        result = 'Tu perfil muestra rasgos reservados y pragmáticos.';
+      } else if (score <= 7) {
+        result = 'Tienes un equilibrio entre emociones y planificación.';
+      } else {
+        result = 'Tiendes a ser abierto y estratégico.';
+      }
+
+      fetch('/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, resultado: result })
+      });
+
+      document.getElementById('paymentSection').classList.remove('d-none');
+    });
+  </script>
+</body>
+</html>
