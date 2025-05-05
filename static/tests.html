@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuestionarios | MindPath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #F4F9F9;
+      font-family: 'Open Sans', sans-serif;
+    }
+    .container {
+      max-width: 720px;
+      margin-top: 3rem;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: #1B2838;
+      margin-bottom: 1.5rem;
+    }
+    .question {
+      margin-bottom: 2rem;
+    }
+    .progress {
+      height: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .btn-option {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="testTitle">Test de Estoicismo</h2>
+    <div class="progress">
+      <div class="progress-bar bg-info" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="question">
+      <p id="questionText"></p>
+      <div id="options"></div>
+    </div>
+    <button id="nextBtn" class="btn btn-primary" disabled>Siguiente</button>
+  </div>
+
+  <script>
+    const preguntas = [
+      "Puedo mantener la calma bajo presión.",
+      "Acepto lo que no puedo controlar.",
+      "Mis emociones no dictan mis acciones.",
+      "Reflexiono antes de reaccionar.",
+      "Acepto críticas sin alterarme."
+    ];
+
+    const opciones = [
+      { texto: "Totalmente en desacuerdo", valor: 0 },
+      { texto: "En desacuerdo", valor: 1 },
+      { texto: "Neutral", valor: 2 },
+      { texto: "De acuerdo", valor: 3 },
+      { texto: "Totalmente de acuerdo", valor: 4 }
+    ];
+
+    let preguntaActual = 0;
+    let puntaje = 0;
+    let seleccionado = null;
+
+    function cargarPregunta() {
+      document.getElementById('questionText').innerText = preguntas[preguntaActual];
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      document.getElementById('nextBtn').disabled = true;
+
+      opciones.forEach((op, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-outline-secondary btn-option';
+        btn.innerText = op.texto;
+        btn.onclick = () => {
+          seleccionado = op.valor;
+          document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('nextBtn').disabled = false;
+        };
+        optionsDiv.appendChild(btn);
+      });
+
+      document.getElementById('progressBar').style.width = `${(preguntaActual / preguntas.length) * 100}%`;
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      puntaje += seleccionado;
+      preguntaActual++;
+      if (preguntaActual < preguntas.length) {
+        cargarPregunta();
+      } else {
+        const email = localStorage.getItem('usuario') || 'anonimo@mindpath.org';
+        fetch('https://tu-backend.com/api/guardar_resultado', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            test: 'Estoicismo',
+            email,
+            score: (puntaje / (preguntas.length * 4)) * 100,
+            date: new Date().toISOString()
+          })
+        });
+        alert(`Test finalizado. Puntaje: ${(puntaje / (preguntas.length * 4) * 100).toFixed(1)}%. Recibirás el resultado al confirmar tu aportación.`);
+        window.location.href = 'resultado.html';
+      }
+    });
+
+    cargarPregunta();
+  </script>
+</body>
+</html>
