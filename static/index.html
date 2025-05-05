@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test de Personalidad Real</title>
+  <title>Test de Estoicismo Interactivo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     body {
@@ -29,73 +29,90 @@
     .btn-success:hover {
       background-color: #2e7d32;
     }
+    .progress-bar {
+      transition: width 0.3s;
+    }
   </style>
 </head>
 <body>
   <div class="container py-5">
     <div class="card p-4">
-      <h1 class="text-center mb-4">🧘 Test de Estoicismo</h1>
-      <p class="text-center">Este test evalúa tu grado de alineación con principios estoicos, como autocontrol, aceptación, disciplina y reflexión racional, con base en literatura científica sobre bienestar psicológico.</p>
+      <h1 class="text-center mb-4">🧘 Test Interactivo de Estoicismo</h1>
+      <p class="text-center">Evalúa tu alineación con principios estoicos como autocontrol, aceptación y racionalidad. Cada respuesta cuenta. Sé sincero contigo mismo.</p>
+
+      <div class="progress mb-4">
+        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+      </div>
 
       <form id="testForm">
-        <div id="questionsContainer"></div>
+        <div id="questionContainer" class="mb-4"></div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
-          <input type="email" class="form-control" id="email" name="email" required>
+        <div class="d-grid gap-2">
+          <button type="button" id="nextBtn" class="btn btn-primary">Siguiente</button>
         </div>
 
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="checkbox" id="terms" required>
-          <label class="form-check-label" for="terms">
-            Acepto los <a href="/terminos.html" target="_blank">términos y condiciones</a> y la <a href="/privacidad.html" target="_blank">política de privacidad</a>.
-          </label>
-        </div>
+        <div id="finalSection" class="d-none">
+          <div class="mb-3 mt-4">
+            <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
 
-        <button type="submit" class="btn btn-primary w-100">Solicitar análisis estoico</button>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="terms" required>
+            <label class="form-check-label" for="terms">
+              Acepto los <a href="/terminos.html" target="_blank">términos y condiciones</a> y la <a href="/privacidad.html" target="_blank">política de privacidad</a>.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">Solicitar análisis</button>
+        </div>
       </form>
 
       <div id="paymentSection" class="mt-4 d-none">
         <div class="alert alert-info">
-          <strong>¡Gracias!</strong> Para ayudarte a sostener este servicio independiente y ético, te pedimos una cooperación simbólica de 0.50€.
+          <strong>¡Gracias!</strong> Para sostener este servicio gratuito y científico, te pedimos una cooperación simbólica de 0.50€.
         </div>
         <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success w-100">Colaborar y recibir resultados</a>
-        <p class="text-muted mt-2 text-center" style="font-size: 0.9em;">Nunca suscribimos a nadie automáticamente. No hay pagos ocultos. Siempre podrás acceder a los resultados sin compromisos posteriores.</p>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.9em;">Sin suscripciones ocultas. Sin pagos recurrentes. Tu privacidad está segura.</p>
       </div>
     </div>
   </div>
 
   <script>
     const preguntas = [
-      "1. Suelo mantener la calma ante situaciones difíciles.",
-      "2. Acepto aquello que no puedo controlar sin resistirme.",
-      "3. Reflexiono antes de reaccionar emocionalmente.",
-      "4. Me esfuerzo por ser virtuoso más que exitoso.",
-      "5. No me altero fácilmente por lo que otros opinan de mí.",
-      "6. Evito el placer excesivo porque sé que es efímero.",
-      "7. Afronto el sufrimiento con dignidad.",
-      "8. Soy disciplinado con mis hábitos diarios.",
-      "9. Pongo la razón por encima del impulso.",
-      "10. Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
-      "11. Me preparo mentalmente para adversidades.",
-      "12. Trato de conocerme a mí mismo con honestidad.",
-      "13. Encuentro libertad en aceptar mi destino.",
-      "14. Reconozco mis errores sin juzgarme duramente.",
-      "15. No envidio los logros materiales de los demás.",
-      "16. Agradezco lo que tengo, aunque sea poco.",
-      "17. Sé distinguir entre deseo y necesidad.",
-      "18. Me esfuerzo por mantenerme ecuánime.",
-      "19. Uso las dificultades como oportunidades para crecer.",
-      "20. Valoro más la paz interior que el reconocimiento externo."
+      "Suelo mantener la calma ante situaciones difíciles.",
+      "Acepto aquello que no puedo controlar sin resistirme.",
+      "Reflexiono antes de reaccionar emocionalmente.",
+      "Me esfuerzo por ser virtuoso más que exitoso.",
+      "No me altero fácilmente por lo que otros opinan de mí.",
+      "Evito el placer excesivo porque sé que es efímero.",
+      "Afronto el sufrimiento con dignidad.",
+      "Soy disciplinado con mis hábitos diarios.",
+      "Pongo la razón por encima del impulso.",
+      "Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
+      "Me preparo mentalmente para adversidades.",
+      "Trato de conocerme a mí mismo con honestidad.",
+      "Encuentro libertad en aceptar mi destino.",
+      "Reconozco mis errores sin juzgarme duramente.",
+      "No envidio los logros materiales de los demás.",
+      "Agradezco lo que tengo, aunque sea poco.",
+      "Sé distinguir entre deseo y necesidad.",
+      "Me esfuerzo por mantenerme ecuánime.",
+      "Uso las dificultades como oportunidades para crecer.",
+      "Valoro más la paz interior que el reconocimiento externo."
     ];
 
-    const container = document.getElementById('questionsContainer');
-    preguntas.forEach((texto, i) => {
-      const div = document.createElement('div');
-      div.className = 'mb-3';
-      div.innerHTML = `
-        <label class="form-label">${texto}</label>
-        <select class="form-select" name="q${i + 1}">
+    let currentIndex = 0;
+    const answers = [];
+    const questionContainer = document.getElementById('questionContainer');
+    const nextBtn = document.getElementById('nextBtn');
+    const form = document.getElementById('testForm');
+    const progressBar = document.getElementById('progressBar');
+
+    function showQuestion(index) {
+      questionContainer.innerHTML = `
+        <label class="form-label">${preguntas[index]}</label>
+        <select class="form-select" id="answer">
           <option value="1">Nunca</option>
           <option value="2">Rara vez</option>
           <option value="3">A veces</option>
@@ -103,18 +120,27 @@
           <option value="5">Siempre</option>
         </select>
       `;
-      container.appendChild(div);
+      progressBar.style.width = `${(index / preguntas.length) * 100}%`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const selected = document.getElementById('answer').value;
+      answers.push(parseInt(selected));
+      currentIndex++;
+      if (currentIndex < preguntas.length) {
+        showQuestion(currentIndex);
+      } else {
+        nextBtn.classList.add('d-none');
+        document.getElementById('finalSection').classList.remove('d-none');
+        questionContainer.classList.add('d-none');
+        progressBar.style.width = '100%';
+      }
     });
 
-    document.getElementById('testForm').addEventListener('submit', function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
-      const formData = new FormData(this);
-      const email = formData.get('email');
-      let total = 0;
-      for (let i = 1; i <= preguntas.length; i++) {
-        total += parseInt(formData.get(`q${i}`));
-      }
-
+      const email = document.getElementById('email').value;
+      const total = answers.reduce((a, b) => a + b, 0);
       let resultado = '';
       if (total <= 50) {
         resultado = 'Tu perfil muestra bajo desarrollo estoico. Podrías beneficiarte de reflexionar sobre tus reacciones y tu aceptación del mundo tal como es.';
@@ -132,6 +158,8 @@
 
       document.getElementById('paymentSection').classList.remove('d-none');
     });
+
+    showQuestion(currentIndex);
   </script>
 </body>
 </html>
