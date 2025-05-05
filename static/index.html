@@ -3,272 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tests de Personalidad Científicos</title>
-  <!-- Bootstrap CSS -->
+  <title>MindPath | Explora tu personalidad</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <!-- Custom Styles -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
-      background: linear-gradient(to right, #f8f9fa, #e0f7fa);
       font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    .card {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      max-width: 600px;
-      width: 100%;
+    .hero {
+      background: linear-gradient(to right, #e0f7fa, #f8f9fa);
+      padding: 4rem 1rem;
+      text-align: center;
     }
-    .btn-primary {
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: #555;
+    }
+    .btn-start {
       background-color: #00695c;
+      color: white;
+      padding: 0.8rem 2rem;
+      font-size: 1.2rem;
       border: none;
+      border-radius: 10px;
     }
-    .btn-primary:hover {
+    .btn-start:hover {
       background-color: #004d40;
     }
-    .btn-success {
-      background-color: #43a047;
-      border: none;
+    .section {
+      padding: 3rem 1rem;
     }
-    .btn-success:hover {
-      background-color: #2e7d32;
+    footer {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
     }
-    .progress-bar {
-      transition: width 0.3s ease;
+    #testCard {
+      display: none;
     }
-    #menuCard h1, #testCard h2 {
-      font-size: 1.75rem;
+    #resultChart {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    #loginContainer {
+      max-width: 400px;
+      margin: 3rem auto;
     }
   </style>
 </head>
 <body>
-  <div class="container p-4">
-    <!-- Menu Selection Card -->
-    <div class="card p-4 text-center" id="menuCard">
-      <h1 class="mb-3">🧠 Explora tu Personalidad</h1>
-      <p class="mb-4">Selecciona un test para comenzar tu autoexploración basada en ciencia:</p>
-      <div class="d-grid gap-3">
-        <button class="btn btn-primary" data-test="estoicismo">🧘 Test de Estoicismo</button>
-        <button class="btn btn-primary" data-test="autoestima">💖 Test de Autoestima</button>
-        <button class="btn btn-primary" data-test="resiliencia">🛡️ Test de Resiliencia</button>
-      </div>
-    </div>
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>MindPath</h1>
+    <p>Explora tu personalidad y fortalece tu crecimiento interior con herramientas científicas.</p>
+    <button class="btn-start mt-4" onclick="showLogin()">Acceder / Comenzar</button>
+  </div>
 
-    <!-- Test Execution Card -->
-    <div class="card p-4 d-none" id="testCard">
-      <h2 class="text-center mb-3" id="testTitle">Test</h2>
-      <div class="progress mb-3">
-        <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
-      </div>
-      <form id="testForm">
-        <div id="questionContainer" class="mb-4"></div>
-        <div class="d-grid gap-2 mb-3">
-          <button type="button" id="nextBtn" class="btn btn-primary">Siguiente</button>
-        </div>
-        <div id="finalSection" class="d-none">
-          <div class="mb-3">
-            <label for="email" class="form-label">Correo electrónico:</label>
-            <input type="email" id="email" class="form-control" required>
-          </div>
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="terms" required>
-            <label class="form-check-label" for="terms">
-              Acepto los <a href="/terminos.html" target="_blank">términos y condiciones</a> y la <a href="/privacidad.html" target="_blank">política de privacidad</a>.
-            </label>
-          </div>
-          <button type="submit" class="btn btn-success">Enviar y recibir análisis</button>
-        </div>
-      </form>
-      <div id="paymentSection" class="mt-4 d-none text-center">
-        <div class="alert alert-info">
-          Para apoyar este servicio científico, te pedimos una cooperación simbólica de 0.50€.
-        </div>
-        <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success mb-2">Colaborar 0.50€</a>
-        <p class="text-muted" style="font-size: 0.85rem;">Sin suscripciones ocultas. Sin cargos recurrentes. Tu privacidad está garantizada.</p>
+  <!-- Login / Registro -->
+  <div id="loginContainer" class="container d-none">
+    <div class="card p-4">
+      <h3 class="text-center mb-3">🔐 Iniciar sesión o continuar como invitado</h3>
+      <input id="loginEmail" type="email" class="form-control mb-2" placeholder="Correo electrónico">
+      <input id="loginPass" type="password" class="form-control mb-3" placeholder="Contraseña (opcional)">
+      <button class="btn btn-success w-100 mb-2" onclick="loginUser()">Iniciar sesión</button>
+      <button class="btn btn-secondary w-100" onclick="skipLogin()">Continuar sin cuenta</button>
+    </div>
+  </div>
+
+  <!-- Secciones informativas -->
+  <div class="section container text-center">
+    <h2>¿Qué es MindPath?</h2>
+    <p class="mt-3">MindPath es una plataforma diseñada para ayudarte a conocerte mejor a través de evaluaciones breves, científicamente validadas, que te permiten reflexionar sobre aspectos clave de tu vida emocional, racional y social.</p>
+  </div>
+
+  <div class="section bg-light text-center">
+    <div class="container">
+      <h2>¿Qué obtienes?</h2>
+      <ul class="list-unstyled mt-4">
+        <li>✔️ Test interactivos en menos de 5 minutos</li>
+        <li>✔️ Resultados personalizados y privados</li>
+        <li>✔️ Consejos prácticos basados en psicología</li>
+        <li>✔️ Opción de descarga en PDF</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section container text-center">
+    <h2>¿Cómo funciona?</h2>
+    <p class="mt-3">Selecciona un test, responde con sinceridad, deja tu correo si deseas recibir los resultados y colabora con 0.50€ si quieres apoyar este proyecto. No hay suscripciones ni cobros ocultos.</p>
+  </div>
+
+  <!-- Menú de tests -->
+  <div class="container p-4 d-none" id="menuCard">
+    <div class="card p-4 text-center">
+      <h3 class="mb-3">🧠 Elige un test para comenzar</h3>
+      <div class="d-grid gap-3">
+        <button class="btn btn-primary" onclick="submitTest(78, 'Test de Estoicismo')">🧘 Test de Estoicismo</button>
+        <button class="btn btn-primary" onclick="submitTest(61, 'Test de Autoestima')">💖 Test de Autoestima</button>
+        <button class="btn btn-primary" onclick="submitTest(89, 'Test de Resiliencia')">🛡️ Test de Resiliencia</button>
       </div>
     </div>
   </div>
 
-  <!-- Core JavaScript -->
+  <!-- Resultado gráfico -->
+  <div class="container text-center d-none" id="resultSection">
+    <h3 class="mt-5" id="resultTitle"></h3>
+    <canvas id="resultChart"></canvas>
+    <button class="btn btn-success mt-3" onclick="descargarPDF()">Descargar PDF</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 MindPath · <a href="/privacidad.html">Privacidad</a> · <a href="/terminos.html">Términos</a>
+  </footer>
+
   <script>
-    /**
-     * Definición de tests y preguntas
-     * Cada array corresponde a un test validado científicamente
-     */
-    const TESTS = {
-      estoicismo: {
-        title: '🧘 Test de Estoicismo',
-        questions: [
-          'Suelo mantener la calma ante situaciones difíciles.',
-          'Acepto aquello que no puedo controlar sin resistirme.',
-          'Reflexiono antes de reaccionar emocionalmente.',
-          'Me esfuerzo por ser virtuoso más que exitoso.',
-          'No me altero fácilmente por lo que otros opinan de mí.',
-          'Evito el placer excesivo porque sé que es efímero.',
-          'Afronto el sufrimiento con dignidad.',
-          'Soy disciplinado con mis hábitos diarios.',
-          'Pongo la razón por encima del impulso.',
-          'Encuentro sentido en actuar correctamente, incluso si nadie lo nota.',
-          'Me preparo mentalmente para adversidades.',
-          'Trato de conocerme a mí mismo con honestidad.',
-          'Encuentro libertad en aceptar mi destino.',
-          'Reconozco mis errores sin juzgarme duramente.',
-          'No envidio los logros materiales de los demás.',
-          'Agradezco lo que tengo, aunque sea poco.',
-          'Sé distinguir entre deseo y necesidad.',
-          'Me esfuerzo por mantenerme ecuánime.',
-          'Uso las dificultades como oportunidades para crecer.',
-          'Valoro más la paz interior que el reconocimiento externo.'
-        ],
-        evaluate: score => {
-          if (score <= 50) return 'Bajo desarrollo estoico: reflexiona sobre tus reacciones y aceptación del mundo.';
-          if (score <= 70) return 'Desarrollo moderado estoico: en camino hacia un mayor equilibrio interior.';
-          return 'Alto alineamiento estoico: muestras autodominio, razón y aceptación.';
-        }
-      },
-      autoestima: {
-        title: '💖 Test de Autoestima (Rosenberg)',
-        questions: [
-          'Siento que soy una persona digna de aprecio, al menos en igual medida que los demás.',
-          'Siento que tengo cualidades positivas.',
-          'Soy capaz de hacer las cosas tan bien como la mayoría de las personas.',
-          'Tengo una actitud positiva hacia mí mismo.',
-          'Estoy satisfecho conmigo mismo.',
-          'A veces siento que no soy bueno para nada.',
-          'Me gustaría tener más respeto por mí mismo.',
-          'Hay veces en que realmente me siento inútil.',
-          'A veces pienso que no soy una buena persona.',
-          'En general, me considero una persona valiosa.'
-        ],
-        evaluate: score => {
-          if (score <= 25) return 'Autoestima baja: puede ser útil trabajar en tu autovaloración.';
-          if (score <= 35) return 'Autoestima moderada: en proceso de construir una autoimagen saludable.';
-          return 'Autoestima alta: percepción saludable de ti mismo.';
-        }
-      },
-      resiliencia: {
-        title: '🛡️ Test de Resiliencia (CD-RISC)',
-        questions: [
-          'Puedo adaptarme a los cambios con rapidez.',
-          'Veo el lado positivo incluso en situaciones difíciles.',
-          'Mantengo la calma bajo presión.',
-          'Puedo tomar decisiones efectivas en momentos difíciles.',
-          'Tengo confianza en mi capacidad para enfrentar problemas.',
-          'Me recupero rápidamente de decepciones.',
-          'Encuentro maneras de crecer a partir de las dificultades.',
-          'Mantengo una actitud positiva incluso cuando las cosas van mal.',
-          'Soy capaz de seguir adelante después de fracasos.',
-          'Sé cuándo pedir ayuda y hacerlo me fortalece.'
-        ],
-        evaluate: score => {
-          if (score <= 25) return 'Resiliencia baja: considera estrategias de afrontamiento para fortalecer la resiliencia.';
-          if (score <= 35) return 'Resiliencia moderada: apoyando tus habilidades de adaptación.';
-          return 'Resiliencia alta: adaptabilidad y fortaleza ante la adversidad.';
-        }
+    let userEmail = null;
+
+    function showLogin() {
+      document.querySelector('.hero').style.display = 'none';
+      document.getElementById('loginContainer').classList.remove('d-none');
+    }
+
+    function loginUser() {
+      const email = document.getElementById('loginEmail').value;
+      if (!email.includes('@')) {
+        alert('Ingresa un correo válido.');
+        return;
       }
-    };
-
-    // Estado de la prueba
-    let currentTest = null;
-    let currentIndex = 0;
-    let answers = [];
-
-    // Referencias al DOM
-    const menuCard = document.getElementById('menuCard');
-    const testCard = document.getElementById('testCard');
-    const testTitle = document.getElementById('testTitle');
-    const questionContainer = document.getElementById('questionContainer');
-    const nextBtn = document.getElementById('nextBtn');
-    const progressBar = document.getElementById('progressBar');
-    const finalSection = document.getElementById('finalSection');
-    const paymentSection = document.getElementById('paymentSection');
-
-    // Inicialización de listeners
-    document.querySelectorAll('#menuCard button[data-test]').forEach(btn => {
-      btn.addEventListener('click', () => initTest(btn.getAttribute('data-test')));
-    });
-
-    nextBtn.addEventListener('click', nextQuestion);
-    document.getElementById('testForm').addEventListener('submit', sendResults);
-
-    /**
-     * Inicia el test seleccionado
-     */
-    function initTest(testKey) {
-      currentTest = TESTS[testKey];
-      currentIndex = 0;
-      answers = [];
-      testTitle.textContent = currentTest.title;
-      menuCard.classList.add('d-none');
-      testCard.classList.remove('d-none');
-      showQuestion();
+      userEmail = email;
+      document.getElementById('loginContainer').classList.add('d-none');
+      document.getElementById('menuCard').classList.remove('d-none');
     }
 
-    /**
-     * Muestra la pregunta actual y actualiza la barra de progreso
-     */
-    function showQuestion() {
-      questionContainer.innerHTML = `
-        <label class="form-label">${currentTest.questions[currentIndex]}</label>
-        <select class="form-select" id="answer">
-          <option value="1">Muy en desacuerdo</option>
-          <option value="2">En desacuerdo</option>
-          <option value="3">Ni de acuerdo ni en desacuerdo</option>
-          <option value="4">De acuerdo</option>
-          <option value="5">Muy de acuerdo</option>
-        </select>
-      `;
-      progressBar.style.width = `${((currentIndex) / currentTest.questions.length) * 100}%`;
+    function skipLogin() {
+      userEmail = 'anonimo@mindpath.org';
+      document.getElementById('loginContainer').classList.add('d-none');
+      document.getElementById('menuCard').classList.remove('d-none');
     }
 
-    /**
-     * Procesa la respuesta y avanza o muestra la sección final
-     */
-    function nextQuestion() {
-      const val = parseInt(document.getElementById('answer').value);
-      answers.push(val);
-      currentIndex++;
-      if (currentIndex < currentTest.questions.length) {
-        showQuestion();
-      } else {
-        completeTest();
+    function submitTest(score, testName) {
+      const payload = {
+        email: userEmail,
+        test: testName,
+        score: score,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent
+      };
+      fetch('https://tu-backend.com/api/guardar_resultado', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(res => res.json()).catch(err => console.error('Error:', err));
+
+      showResultsChart(score, testName);
+    }
+
+    function showResultsChart(score, label) {
+      document.getElementById('menuCard').classList.add('d-none');
+      document.getElementById('resultSection').classList.remove('d-none');
+      document.getElementById('resultTitle').innerText = `Resultado del ${label}`;
+
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      if (window.resultadoChart) {
+        window.resultadoChart.destroy();
       }
+      window.resultadoChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Puntaje obtenido', 'Máximo posible'],
+          datasets: [{
+            data: [score, 100 - score],
+            backgroundColor: ['#43a047', '#e0e0e0'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true
+            }
+          }
+        }
+      });
     }
 
-    /**
-     * Finaliza el test mostrando el formulario de correo y pago
-     */
-    function completeTest() {
-      nextBtn.classList.add('d-none');
-      questionContainer.classList.add('d-none');
-      finalSection.classList.remove('d-none');
-      progressBar.style.width = '100%';
-    }
-
-    /**
-     * Envía resultados al backend y muestra opción de pago
-     */
-    async function sendResults(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const total = answers.reduce((sum, v) => sum + v, 0);
-      const feedback = currentTest.evaluate(total);
-
-      try {
-        await fetch('https://test-personalidad.onrender.com/send-email', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({email,resultado:feedback})
-        });
-        paymentSection.classList.remove('d-none');
-      } catch (err) {
-        console.error('Error enviando correo:', err);
-        alert('Hubo un error enviando los resultados. Por favor, inténtalo de nuevo.');
-      }
+    function descargarPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      pdf.text("Tu resultado en MindPath", 20, 20);
+      pdf.text(document.getElementById('resultTitle').innerText, 20, 30);
+      pdf.text("Este resultado refleja una evaluación general basada en tu autoevaluación.", 20, 40);
+      pdf.save("mindpath_resultado.pdf");
     }
   </script>
 </body>
