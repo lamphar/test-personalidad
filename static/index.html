@@ -3,206 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MindPath | Explora tu personalidad</title>
+  <title>MindPath | Libera tu potencial</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    :root {
+      --primary: #1B2838;
+      --accent: #2E8BC0;
+      --light-bg: #F4F9F9;
+      --text-dark: #0B1D26;
     }
+    body {
+      margin: 0;
+      font-family: 'Open Sans', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--primary);
+    }
+    .navbar {
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary) !important;
+    }
+    .btn-accent {
+      background-color: var(--accent);
+      color: #FFF;
+      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-accent:hover {
+      background-color: #196F90;
+    }
+    /* Hero */
     .hero {
-      background: linear-gradient(to right, #e0f7fa, #f8f9fa);
-      padding: 4rem 1rem;
-      text-align: center;
+      background: url('https://cdn-icons-png.flaticon.com/512/2907/2907763.png') no-repeat calc(100% - 2rem) center, linear-gradient(135deg, #FFFFFF, var(--light-bg));
+      background-size: 300px;
+      padding: 5rem 2rem;
+      position: relative;
+    }
+    .hero .content {
+      max-width: 600px;
     }
     .hero h1 {
-      font-size: 2.8rem;
-      font-weight: bold;
+      font-size: 3rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
     }
     .hero p {
-      font-size: 1.2rem;
-      color: #555;
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      font-weight: 300;
     }
-    .btn-start {
-      background-color: #00695c;
-      color: white;
-      padding: 0.8rem 2rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 10px;
-    }
-    .btn-start:hover {
-      background-color: #004d40;
-    }
+    /* Sections */
     .section {
-      padding: 3rem 1rem;
+      padding: 4rem 2rem;
     }
-    footer {
-      background-color: #f1f1f1;
-      padding: 1rem;
+    .section-title {
       text-align: center;
-      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      font-size: 2rem;
     }
-    #testCard {
-      display: none;
+    /* Tests cards */
+    .card-test {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
     }
-    #resultChart {
-      max-width: 400px;
-      margin: 2rem auto;
+    .card-test:hover {
+      transform: translateY(-5px);
     }
-    #loginContainer {
-      max-width: 400px;
-      margin: 3rem auto;
+    .card-test i {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+    .card-test .card-body h5 {
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    /* Footer */
+    footer {
+      background-color: #FFFFFF;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.875rem;
+      border-top: 1px solid #E2E8F0;
+    }
+    footer a {
+      color: var(--primary);
+      margin: 0 0.5rem;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <!-- Hero Section -->
-  <div class="hero">
-    <h1>MindPath</h1>
-    <p>Explora tu personalidad y fortalece tu crecimiento interior con herramientas científicas.</p>
-    <button class="btn-start mt-4" onclick="showLogin()">Acceder / Comenzar</button>
-  </div>
-
-  <!-- Login / Registro -->
-  <div id="loginContainer" class="container d-none">
-    <div class="card p-4">
-      <h3 class="text-center mb-3">🔐 Iniciar sesión o continuar como invitado</h3>
-      <input id="loginEmail" type="email" class="form-control mb-2" placeholder="Correo electrónico">
-      <input id="loginPass" type="password" class="form-control mb-3" placeholder="Contraseña (opcional)">
-      <button class="btn btn-success w-100 mb-2" onclick="loginUser()">Iniciar sesión</button>
-      <button class="btn btn-secondary w-100" onclick="skipLogin()">Continuar sin cuenta</button>
-    </div>
-  </div>
-
-  <!-- Secciones informativas -->
-  <div class="section container text-center">
-    <h2>¿Qué es MindPath?</h2>
-    <p class="mt-3">MindPath es una plataforma diseñada para ayudarte a conocerte mejor a través de evaluaciones breves, científicamente validadas, que te permiten reflexionar sobre aspectos clave de tu vida emocional, racional y social.</p>
-  </div>
-
-  <div class="section bg-light text-center">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <h2>¿Qué obtienes?</h2>
-      <ul class="list-unstyled mt-4">
-        <li>✔️ Test interactivos en menos de 5 minutos</li>
-        <li>✔️ Resultados personalizados y privados</li>
-        <li>✔️ Consejos prácticos basados en psicología</li>
-        <li>✔️ Opción de descarga en PDF</li>
-      </ul>
+      <a class="navbar-brand" href="#">MindPath</a>
+      <button class="btn btn-outline-primary" onclick="window.location.href='login.html'">Acceder / Comenzar</button>
     </div>
-  </div>
+  </nav>
 
-  <div class="section container text-center">
-    <h2>¿Cómo funciona?</h2>
-    <p class="mt-3">Selecciona un test, responde con sinceridad, deja tu correo si deseas recibir los resultados y colabora con 0.50€ si quieres apoyar este proyecto. No hay suscripciones ni cobros ocultos.</p>
-  </div>
-
-  <!-- Menú de tests -->
-  <div class="container p-4 d-none" id="menuCard">
-    <div class="card p-4 text-center">
-      <h3 class="mb-3">🧠 Elige un test para comenzar</h3>
-      <div class="d-grid gap-3">
-        <button class="btn btn-primary" onclick="submitTest(78, 'Test de Estoicismo')">🧘 Test de Estoicismo</button>
-        <button class="btn btn-primary" onclick="submitTest(61, 'Test de Autoestima')">💖 Test de Autoestima</button>
-        <button class="btn btn-primary" onclick="submitTest(89, 'Test de Resiliencia')">🛡️ Test de Resiliencia</button>
+  <!-- Hero Section -->
+  <section class="hero d-flex align-items-center">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 content">
+          <h1>Libera tu potencial interior</h1>
+          <p>Explora tu personalidad con tests científicos y obtén reportes visuales para impulsar tu crecimiento y bienestar.</p>
+          <button class="btn-accent" onclick="window.location.href='login.html'">Comenzar Ahora</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Resultado gráfico -->
-  <div class="container text-center d-none" id="resultSection">
-    <h3 class="mt-5" id="resultTitle"></h3>
-    <canvas id="resultChart"></canvas>
-    <button class="btn btn-success mt-3" onclick="descargarPDF()">Descargar PDF</button>
-  </div>
+  <!-- What is -->
+  <section class="section bg-white" id="about">
+    <div class="container">
+      <h2 class="section-title">¿Qué es MindPath?</h2>
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <p>MindPath combina la excelencia de la investigación psicológica con una experiencia digital ágil. Nuestros tests están basados en instrumentos validados y ofrecen resultados claros respaldados por datos, permitiéndote tomar decisiones informadas sobre tu desarrollo personal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section benefits text-center">
+    <div class="container">
+      <h2 class="section-title">Beneficios Principales</h2>
+      <div class="row">
+        <div class="col-md-3">
+          <i class="bi bi-clock-history"></i>
+          <h4>Rapidísimo</h4>
+          <p>Completa cualquier test en menos de 5 minutos.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-shield-lock-fill"></i>
+          <h4>Confidencial</h4>
+          <p>Tu privacidad y datos 100% protegidos.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-bar-chart-line-fill"></i>
+          <h4>Analítico</h4>
+          <p>Gráficas detalladas y reportes descargables.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-person-check-fill"></i>
+          <h4>Personalizado</h4>
+          <p>Recomendaciones adaptadas a tu perfil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tests preview -->
+  <section class="section" id="tests">
+    <div class="container">
+      <h2 class="section-title">Nuestros Tests</h2>
+      <div class="row gy-4">
+        <div class="col-md-4">
+          <div class="card card-test p-3 h-100">
+            <i class="bi bi-brain"></i>
+            <div class="card-body">
+              <h5>🧘‍♂️ Estoicismo</h5>
+              <p>Evalúa tu capacidad de autocontrol y aceptación basada en filosofía y psicología.</p>
+              <button class="btn-accent btn-sm" onclick="window.location.href='login.html'">Iniciar</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-test p-3 h-100">
+            <i class="bi bi-heart-fill"></i>
+            <div class="card-body">
+              <h5>💖 Autoestima</h5>
+              <p>Test validado de Rosenberg para medir tu valoración personal y seguridad interna.</p>
+              <button class="btn-accent btn-sm" onclick="window.location.href='login.html'">Iniciar</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-test p-3 h-100">
+            <i class="bi bi-shield-fill-check"></i>
+            <div class="card-body">
+              <h5>🛡️ Resiliencia</h5>
+              <p>Mide tu fortaleza ante la adversidad con el test CD-RISC.</p>
+              <button class="btn-accent btn-sm" onclick="window.location.href='login.html'">Iniciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer>
-    &copy; 2025 MindPath · <a href="/privacidad.html">Privacidad</a> · <a href="/terminos.html">Términos</a>
+    <p>&copy; 2025 MindPath · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></p>
   </footer>
-
-  <script>
-    let userEmail = null;
-
-    function showLogin() {
-      document.querySelector('.hero').style.display = 'none';
-      document.getElementById('loginContainer').classList.remove('d-none');
-    }
-
-    function loginUser() {
-      const email = document.getElementById('loginEmail').value;
-      if (!email.includes('@')) {
-        alert('Ingresa un correo válido.');
-        return;
-      }
-      userEmail = email;
-      document.getElementById('loginContainer').classList.add('d-none');
-      document.getElementById('menuCard').classList.remove('d-none');
-    }
-
-    function skipLogin() {
-      userEmail = 'anonimo@mindpath.org';
-      document.getElementById('loginContainer').classList.add('d-none');
-      document.getElementById('menuCard').classList.remove('d-none');
-    }
-
-    function submitTest(score, testName) {
-      const payload = {
-        email: userEmail,
-        test: testName,
-        score: score,
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent
-      };
-      fetch('https://tu-backend.com/api/guardar_resultado', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(res => res.json()).catch(err => console.error('Error:', err));
-
-      showResultsChart(score, testName);
-    }
-
-    function showResultsChart(score, label) {
-      document.getElementById('menuCard').classList.add('d-none');
-      document.getElementById('resultSection').classList.remove('d-none');
-      document.getElementById('resultTitle').innerText = `Resultado del ${label}`;
-
-      const ctx = document.getElementById('resultChart').getContext('2d');
-      if (window.resultadoChart) {
-        window.resultadoChart.destroy();
-      }
-      window.resultadoChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Puntaje obtenido', 'Máximo posible'],
-          datasets: [{
-            data: [score, 100 - score],
-            backgroundColor: ['#43a047', '#e0e0e0'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true
-            }
-          }
-        }
-      });
-    }
-
-    function descargarPDF() {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
-      pdf.text("Tu resultado en MindPath", 20, 20);
-      pdf.text(document.getElementById('resultTitle').innerText, 20, 30);
-      pdf.text("Este resultado refleja una evaluación general basada en tu autoevaluación.", 20, 40);
-      pdf.save("mindpath_resultado.pdf");
-    }
-  </script>
 </body>
 </html>
