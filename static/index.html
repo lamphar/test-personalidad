@@ -3,78 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test de Personalidad</title>
+  <title>Test de Personalidad Real</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #f8f9fa, #e0f7fa);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      background-color: #00695c;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #004d40;
+    }
+    .btn-success {
+      background-color: #43a047;
+      border: none;
+    }
+    .btn-success:hover {
+      background-color: #2e7d32;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
   <div class="container py-5">
-    <h1 class="text-center mb-4">Test de Personalidad Breve</h1>
+    <div class="card p-4">
+      <h1 class="text-center mb-4">🧘 Test de Estoicismo</h1>
+      <p class="text-center">Este test evalúa tu grado de alineación con principios estoicos, como autocontrol, aceptación, disciplina y reflexión racional, con base en literatura científica sobre bienestar psicológico.</p>
 
-    <form id="testForm">
-      <div class="mb-3">
-        <label class="form-label">1. Me siento cómodo compartiendo mis emociones.</label>
-        <select class="form-select" name="q1">
-          <option value="1">Nada de acuerdo</option>
-          <option value="2">Poco de acuerdo</option>
-          <option value="3">Neutral</option>
-          <option value="4">De acuerdo</option>
-          <option value="5">Totalmente de acuerdo</option>
-        </select>
+      <form id="testForm">
+        <div id="questionsContainer"></div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="terms" required>
+          <label class="form-check-label" for="terms">
+            Acepto los <a href="/terminos.html" target="_blank">términos y condiciones</a> y la <a href="/privacidad.html" target="_blank">política de privacidad</a>.
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Solicitar análisis estoico</button>
+      </form>
+
+      <div id="paymentSection" class="mt-4 d-none">
+        <div class="alert alert-info">
+          <strong>¡Gracias!</strong> Para ayudarte a sostener este servicio independiente y ético, te pedimos una cooperación simbólica de 0.50€.
+        </div>
+        <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success w-100">Colaborar y recibir resultados</a>
+        <p class="text-muted mt-2 text-center" style="font-size: 0.9em;">Nunca suscribimos a nadie automáticamente. No hay pagos ocultos. Siempre podrás acceder a los resultados sin compromisos posteriores.</p>
       </div>
-      <div class="mb-3">
-        <label class="form-label">2. Suelo planear a largo plazo.</label>
-        <select class="form-select" name="q2">
-          <option value="1">Nada de acuerdo</option>
-          <option value="2">Poco de acuerdo</option>
-          <option value="3">Neutral</option>
-          <option value="4">De acuerdo</option>
-          <option value="5">Totalmente de acuerdo</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
-        <input type="email" class="form-control" id="email" name="email" required>
-      </div>
-
-      <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" id="terms" required>
-        <label class="form-check-label" for="terms">
-          Acepto los <a href="#" target="_blank">términos y condiciones</a> y la <a href="#" target="_blank">política de privacidad</a>.
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Ver resultado (0.50€)</button>
-    </form>
-
-    <div id="paymentSection" class="mt-4 d-none">
-      <p>Para recibir tu análisis completo, coopera con 0.50€:</p>
-      <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success">Pagar ahora</a>
     </div>
   </div>
 
   <script>
+    const preguntas = [
+      "1. Suelo mantener la calma ante situaciones difíciles.",
+      "2. Acepto aquello que no puedo controlar sin resistirme.",
+      "3. Reflexiono antes de reaccionar emocionalmente.",
+      "4. Me esfuerzo por ser virtuoso más que exitoso.",
+      "5. No me altero fácilmente por lo que otros opinan de mí.",
+      "6. Evito el placer excesivo porque sé que es efímero.",
+      "7. Afronto el sufrimiento con dignidad.",
+      "8. Soy disciplinado con mis hábitos diarios.",
+      "9. Pongo la razón por encima del impulso.",
+      "10. Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
+      "11. Me preparo mentalmente para adversidades.",
+      "12. Trato de conocerme a mí mismo con honestidad.",
+      "13. Encuentro libertad en aceptar mi destino.",
+      "14. Reconozco mis errores sin juzgarme duramente.",
+      "15. No envidio los logros materiales de los demás.",
+      "16. Agradezco lo que tengo, aunque sea poco.",
+      "17. Sé distinguir entre deseo y necesidad.",
+      "18. Me esfuerzo por mantenerme ecuánime.",
+      "19. Uso las dificultades como oportunidades para crecer.",
+      "20. Valoro más la paz interior que el reconocimiento externo."
+    ];
+
+    const container = document.getElementById('questionsContainer');
+    preguntas.forEach((texto, i) => {
+      const div = document.createElement('div');
+      div.className = 'mb-3';
+      div.innerHTML = `
+        <label class="form-label">${texto}</label>
+        <select class="form-select" name="q${i + 1}">
+          <option value="1">Nunca</option>
+          <option value="2">Rara vez</option>
+          <option value="3">A veces</option>
+          <option value="4">A menudo</option>
+          <option value="5">Siempre</option>
+        </select>
+      `;
+      container.appendChild(div);
+    });
+
     document.getElementById('testForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(this);
-      const q1 = parseInt(formData.get('q1'));
-      const q2 = parseInt(formData.get('q2'));
       const email = formData.get('email');
-
-      const score = q1 + q2;
-      let result = '';
-      if (score <= 4) {
-        result = 'Tu perfil muestra rasgos reservados y pragmáticos.';
-      } else if (score <= 7) {
-        result = 'Tienes un equilibrio entre emociones y planificación.';
-      } else {
-        result = 'Tiendes a ser abierto y estratégico.';
+      let total = 0;
+      for (let i = 1; i <= preguntas.length; i++) {
+        total += parseInt(formData.get(`q${i}`));
       }
 
-      fetch('/send-email', {
+      let resultado = '';
+      if (total <= 50) {
+        resultado = 'Tu perfil muestra bajo desarrollo estoico. Podrías beneficiarte de reflexionar sobre tus reacciones y tu aceptación del mundo tal como es.';
+      } else if (total <= 70) {
+        resultado = 'Tienes una base moderada de principios estoicos. Estás en el camino hacia mayor equilibrio interior.';
+      } else {
+        resultado = 'Demuestras un alto alineamiento con valores estoicos como autodominio, razón y aceptación.';
+      }
+
+      fetch('https://test-personalidad.onrender.com/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, resultado: result })
+        body: JSON.stringify({ email: email, resultado: resultado })
       });
 
       document.getElementById('paymentSection').classList.remove('d-none');
