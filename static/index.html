@@ -78,70 +78,121 @@
     </div>
   </div>
 
-  <script>
-    const preguntas = [
-      "Suelo mantener la calma ante situaciones difíciles.",
-      "Acepto aquello que no puedo controlar sin resistirme.",
-      "Reflexiono antes de reaccionar emocionalmente.",
-      "Me esfuerzo por ser virtuoso más que exitoso.",
-      "No me altero fácilmente por lo que otros opinan de mí.",
-      "Evito el placer excesivo porque sé que es efímero.",
-      "Afronto el sufrimiento con dignidad.",
-      "Soy disciplinado con mis hábitos diarios.",
-      "Pongo la razón por encima del impulso.",
-      "Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
-      "Me preparo mentalmente para adversidades.",
-      "Trato de conocerme a mí mismo con honestidad.",
-      "Encuentro libertad en aceptar mi destino.",
-      "Reconozco mis errores sin juzgarme duramente.",
-      "No envidio los logros materiales de los demás.",
-      "Agradezco lo que tengo, aunque sea poco.",
-      "Sé distinguir entre deseo y necesidad.",
-      "Me esfuerzo por mantenerme ecuánime.",
-      "Uso las dificultades como oportunidades para crecer.",
-      "Valoro más la paz interior que el reconocimiento externo."
-    ];
+<!-- ... [código anterior sin cambios] ... -->
+<script>
+  const testEstoicismo = [
+    "Suelo mantener la calma ante situaciones difíciles.",
+    "Acepto aquello que no puedo controlar sin resistirme.",
+    "Reflexiono antes de reaccionar emocionalmente.",
+    "Me esfuerzo por ser virtuoso más que exitoso.",
+    "No me altero fácilmente por lo que otros opinan de mí.",
+    "Evito el placer excesivo porque sé que es efímero.",
+    "Afronto el sufrimiento con dignidad.",
+    "Soy disciplinado con mis hábitos diarios.",
+    "Pongo la razón por encima del impulso.",
+    "Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
+    "Me preparo mentalmente para adversidades.",
+    "Trato de conocerme a mí mismo con honestidad.",
+    "Encuentro libertad en aceptar mi destino.",
+    "Reconozco mis errores sin juzgarme duramente.",
+    "No envidio los logros materiales de los demás.",
+    "Agradezco lo que tengo, aunque sea poco.",
+    "Sé distinguir entre deseo y necesidad.",
+    "Me esfuerzo por mantenerme ecuánime.",
+    "Uso las dificultades como oportunidades para crecer.",
+    "Valoro más la paz interior que el reconocimiento externo."
+  ];
 
-    let currentIndex = 0;
-    const answers = [];
-    const questionContainer = document.getElementById('questionContainer');
-    const nextBtn = document.getElementById('nextBtn');
-    const form = document.getElementById('testForm');
-    const progressBar = document.getElementById('progressBar');
+  const testAutoestima = [
+    "Siento que soy una persona digna de aprecio, al menos en igual medida que los demás.",
+    "Siento que tengo cualidades positivas.",
+    "Soy capaz de hacer las cosas tan bien como la mayoría de las personas.",
+    "Tengo una actitud positiva hacia mí mismo.",
+    "Estoy satisfecho conmigo mismo.",
+    "A veces siento que no soy bueno para nada.",
+    "Me gustaría tener más respeto por mí mismo.",
+    "Hay veces en que realmente me siento inútil.",
+    "A veces pienso que no soy una buena persona.",
+    "En general, me considero una persona valiosa."
+  ];
 
-    function showQuestion(index) {
-      questionContainer.innerHTML = `
-        <label class="form-label">${preguntas[index]}</label>
-        <select class="form-select" id="answer">
-          <option value="1">Nunca</option>
-          <option value="2">Rara vez</option>
-          <option value="3">A veces</option>
-          <option value="4">A menudo</option>
-          <option value="5">Siempre</option>
-        </select>
-      `;
-      progressBar.style.width = `${(index / preguntas.length) * 100}%`;
+  const testResiliencia = [
+    "Puedo adaptarme a los cambios con rapidez.",
+    "Veo el lado positivo incluso en situaciones difíciles.",
+    "Mantengo la calma bajo presión.",
+    "Puedo tomar decisiones efectivas en momentos difíciles.",
+    "Tengo confianza en mi capacidad para enfrentar problemas.",
+    "Me recupero rápidamente de decepciones.",
+    "Encuentro maneras de crecer a partir de las dificultades.",
+    "Mantengo una actitud positiva incluso cuando las cosas van mal.",
+    "Soy capaz de seguir adelante después de fracasos.",
+    "Sé cuándo pedir ayuda y hacerlo me fortalece."
+  ];
+
+  let currentIndex = 0;
+  let currentTest = [];
+  let answers = [];
+
+  const menuCard = document.getElementById('menuCard');
+  const testCard = document.getElementById('testCard');
+  const testTitle = document.getElementById('testTitle');
+  const questionContainer = document.getElementById('questionContainer');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressBar = document.getElementById('progressBar');
+
+  function startTest(testName) {
+    if (testName === 'estoicismo') {
+      currentTest = testEstoicismo;
+      testTitle.textContent = '🧘 Test de Estoicismo';
+    } else if (testName === 'autoestima') {
+      currentTest = testAutoestima;
+      testTitle.textContent = '💖 Test de Autoestima';
+    } else if (testName === 'resiliencia') {
+      currentTest = testResiliencia;
+      testTitle.textContent = '🛡️ Test de Resiliencia';
     }
+    currentIndex = 0;
+    answers = [];
+    menuCard.classList.add('d-none');
+    testCard.classList.remove('d-none');
+    showQuestion(currentIndex);
+  }
 
-    nextBtn.addEventListener('click', () => {
-      const selected = document.getElementById('answer').value;
-      answers.push(parseInt(selected));
-      currentIndex++;
-      if (currentIndex < preguntas.length) {
-        showQuestion(currentIndex);
-      } else {
-        nextBtn.classList.add('d-none');
-        document.getElementById('finalSection').classList.remove('d-none');
-        questionContainer.classList.add('d-none');
-        progressBar.style.width = '100%';
-      }
-    });
+  function showQuestion(index) {
+    questionContainer.innerHTML = `
+      <label class="form-label">${currentTest[index]}</label>
+      <select class="form-select" id="answer">
+        <option value="1">Muy en desacuerdo</option>
+        <option value="2">En desacuerdo</option>
+        <option value="3">Ni de acuerdo ni en desacuerdo</option>
+        <option value="4">De acuerdo</option>
+        <option value="5">Muy de acuerdo</option>
+      </select>
+    `;
+    progressBar.style.width = `${(index / currentTest.length) * 100}%`;
+  }
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const total = answers.reduce((a, b) => a + b, 0);
-      let resultado = '';
+  nextBtn.addEventListener('click', () => {
+    const selected = document.getElementById('answer').value;
+    answers.push(parseInt(selected));
+    currentIndex++;
+    if (currentIndex < currentTest.length) {
+      showQuestion(currentIndex);
+    } else {
+      nextBtn.classList.add('d-none');
+      document.getElementById('finalSection').classList.remove('d-none');
+      questionContainer.classList.add('d-none');
+      progressBar.style.width = '100%';
+    }
+  });
+
+  document.getElementById('testForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const total = answers.reduce((a, b) => a + b, 0);
+    let resultado = '';
+
+    if (currentTest === testEstoicismo) {
       if (total <= 50) {
         resultado = 'Tu perfil muestra bajo desarrollo estoico. Podrías beneficiarte de reflexionar sobre tus reacciones y tu aceptación del mundo tal como es.';
       } else if (total <= 70) {
@@ -149,17 +200,33 @@
       } else {
         resultado = 'Demuestras un alto alineamiento con valores estoicos como autodominio, razón y aceptación.';
       }
+    } else if (currentTest === testAutoestima) {
+      if (total <= 25) {
+        resultado = 'Tu nivel de autoestima parece estar por debajo del promedio. Puede ser útil trabajar en la autovaloración con apoyo o reflexión.';
+      } else if (total <= 35) {
+        resultado = 'Tu autoestima es moderada. Estás en proceso de construir una imagen propia más sólida.';
+      } else {
+        resultado = 'Tu autoestima parece estar bien desarrollada. Tienes una percepción saludable de ti mismo.';
+      }
+    } else if (currentTest === testResiliencia) {
+      if (total <= 25) {
+        resultado = 'Tu resiliencia es baja. Trabajar en estrategias de afrontamiento puede ayudarte a desarrollar más fortaleza interna.';
+      } else if (total <= 35) {
+        resultado = 'Tienes una resiliencia moderada. Estás construyendo habilidades para afrontar la adversidad.';
+      } else {
+        resultado = 'Tu resiliencia es alta. Sabes adaptarte, resistir y aprender de las dificultades con fortaleza.';
+      }
+    }
 
-      fetch('https://test-personalidad.onrender.com/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, resultado: resultado })
-      });
-
-      document.getElementById('paymentSection').classList.remove('d-none');
+    fetch('https://test-personalidad.onrender.com/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, resultado: resultado })
     });
 
-    showQuestion(currentIndex);
-  </script>
+    document.getElementById('paymentSection').classList.remove('d-none');
+  });
+</script>
+
 </body>
 </html>
