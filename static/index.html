@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test de Estoicismo Interactivo</title>
+  <title>Tests de Personalidad Científicos</title>
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Custom Styles -->
   <style>
     body {
       background: linear-gradient(to right, #f8f9fa, #e0f7fa);
       font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .card {
       border: none;
       border-radius: 15px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
     }
     .btn-primary {
       background-color: #00695c;
@@ -30,136 +38,238 @@
       background-color: #2e7d32;
     }
     .progress-bar {
-      transition: width 0.3s;
+      transition: width 0.3s ease;
+    }
+    #menuCard h1, #testCard h2 {
+      font-size: 1.75rem;
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
-    <div class="card p-4">
-      <h1 class="text-center mb-4">🧘 Test Interactivo de Estoicismo</h1>
-      <p class="text-center">Evalúa tu alineación con principios estoicos como autocontrol, aceptación y racionalidad. Cada respuesta cuenta. Sé sincero contigo mismo.</p>
-
-      <div class="progress mb-4">
-        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+  <div class="container p-4">
+    <!-- Menu Selection Card -->
+    <div class="card p-4 text-center" id="menuCard">
+      <h1 class="mb-3">🧠 Explora tu Personalidad</h1>
+      <p class="mb-4">Selecciona un test para comenzar tu autoexploración basada en ciencia:</p>
+      <div class="d-grid gap-3">
+        <button class="btn btn-primary" data-test="estoicismo">🧘 Test de Estoicismo</button>
+        <button class="btn btn-primary" data-test="autoestima">💖 Test de Autoestima</button>
+        <button class="btn btn-primary" data-test="resiliencia">🛡️ Test de Resiliencia</button>
       </div>
+    </div>
 
+    <!-- Test Execution Card -->
+    <div class="card p-4 d-none" id="testCard">
+      <h2 class="text-center mb-3" id="testTitle">Test</h2>
+      <div class="progress mb-3">
+        <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+      </div>
       <form id="testForm">
         <div id="questionContainer" class="mb-4"></div>
-
-        <div class="d-grid gap-2">
+        <div class="d-grid gap-2 mb-3">
           <button type="button" id="nextBtn" class="btn btn-primary">Siguiente</button>
         </div>
-
         <div id="finalSection" class="d-none">
-          <div class="mb-3 mt-4">
-            <label for="email" class="form-label">Introduce tu correo para recibir los resultados:</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico:</label>
+            <input type="email" id="email" class="form-control" required>
           </div>
-
           <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="terms" required>
             <label class="form-check-label" for="terms">
               Acepto los <a href="/terminos.html" target="_blank">términos y condiciones</a> y la <a href="/privacidad.html" target="_blank">política de privacidad</a>.
             </label>
           </div>
-
-          <button type="submit" class="btn btn-success w-100">Solicitar análisis</button>
+          <button type="submit" class="btn btn-success">Enviar y recibir análisis</button>
         </div>
       </form>
-
-      <div id="paymentSection" class="mt-4 d-none">
+      <div id="paymentSection" class="mt-4 d-none text-center">
         <div class="alert alert-info">
-          <strong>¡Gracias!</strong> Para sostener este servicio gratuito y científico, te pedimos una cooperación simbólica de 0.50€.
+          Para apoyar este servicio científico, te pedimos una cooperación simbólica de 0.50€.
         </div>
-        <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success w-100">Colaborar y recibir resultados</a>
-        <p class="text-muted mt-2 text-center" style="font-size: 0.9em;">Sin suscripciones ocultas. Sin pagos recurrentes. Tu privacidad está segura.</p>
+        <a href="https://buy.stripe.com/test_donation_link" class="btn btn-success mb-2">Colaborar 0.50€</a>
+        <p class="text-muted" style="font-size: 0.85rem;">Sin suscripciones ocultas. Sin cargos recurrentes. Tu privacidad está garantizada.</p>
       </div>
     </div>
   </div>
 
+  <!-- Core JavaScript -->
   <script>
-    const preguntas = [
-      "Suelo mantener la calma ante situaciones difíciles.",
-      "Acepto aquello que no puedo controlar sin resistirme.",
-      "Reflexiono antes de reaccionar emocionalmente.",
-      "Me esfuerzo por ser virtuoso más que exitoso.",
-      "No me altero fácilmente por lo que otros opinan de mí.",
-      "Evito el placer excesivo porque sé que es efímero.",
-      "Afronto el sufrimiento con dignidad.",
-      "Soy disciplinado con mis hábitos diarios.",
-      "Pongo la razón por encima del impulso.",
-      "Encuentro sentido en actuar correctamente, incluso si nadie lo nota.",
-      "Me preparo mentalmente para adversidades.",
-      "Trato de conocerme a mí mismo con honestidad.",
-      "Encuentro libertad en aceptar mi destino.",
-      "Reconozco mis errores sin juzgarme duramente.",
-      "No envidio los logros materiales de los demás.",
-      "Agradezco lo que tengo, aunque sea poco.",
-      "Sé distinguir entre deseo y necesidad.",
-      "Me esfuerzo por mantenerme ecuánime.",
-      "Uso las dificultades como oportunidades para crecer.",
-      "Valoro más la paz interior que el reconocimiento externo."
-    ];
+    /**
+     * Definición de tests y preguntas
+     * Cada array corresponde a un test validado científicamente
+     */
+    const TESTS = {
+      estoicismo: {
+        title: '🧘 Test de Estoicismo',
+        questions: [
+          'Suelo mantener la calma ante situaciones difíciles.',
+          'Acepto aquello que no puedo controlar sin resistirme.',
+          'Reflexiono antes de reaccionar emocionalmente.',
+          'Me esfuerzo por ser virtuoso más que exitoso.',
+          'No me altero fácilmente por lo que otros opinan de mí.',
+          'Evito el placer excesivo porque sé que es efímero.',
+          'Afronto el sufrimiento con dignidad.',
+          'Soy disciplinado con mis hábitos diarios.',
+          'Pongo la razón por encima del impulso.',
+          'Encuentro sentido en actuar correctamente, incluso si nadie lo nota.',
+          'Me preparo mentalmente para adversidades.',
+          'Trato de conocerme a mí mismo con honestidad.',
+          'Encuentro libertad en aceptar mi destino.',
+          'Reconozco mis errores sin juzgarme duramente.',
+          'No envidio los logros materiales de los demás.',
+          'Agradezco lo que tengo, aunque sea poco.',
+          'Sé distinguir entre deseo y necesidad.',
+          'Me esfuerzo por mantenerme ecuánime.',
+          'Uso las dificultades como oportunidades para crecer.',
+          'Valoro más la paz interior que el reconocimiento externo.'
+        ],
+        evaluate: score => {
+          if (score <= 50) return 'Bajo desarrollo estoico: reflexiona sobre tus reacciones y aceptación del mundo.';
+          if (score <= 70) return 'Desarrollo moderado estoico: en camino hacia un mayor equilibrio interior.';
+          return 'Alto alineamiento estoico: muestras autodominio, razón y aceptación.';
+        }
+      },
+      autoestima: {
+        title: '💖 Test de Autoestima (Rosenberg)',
+        questions: [
+          'Siento que soy una persona digna de aprecio, al menos en igual medida que los demás.',
+          'Siento que tengo cualidades positivas.',
+          'Soy capaz de hacer las cosas tan bien como la mayoría de las personas.',
+          'Tengo una actitud positiva hacia mí mismo.',
+          'Estoy satisfecho conmigo mismo.',
+          'A veces siento que no soy bueno para nada.',
+          'Me gustaría tener más respeto por mí mismo.',
+          'Hay veces en que realmente me siento inútil.',
+          'A veces pienso que no soy una buena persona.',
+          'En general, me considero una persona valiosa.'
+        ],
+        evaluate: score => {
+          if (score <= 25) return 'Autoestima baja: puede ser útil trabajar en tu autovaloración.';
+          if (score <= 35) return 'Autoestima moderada: en proceso de construir una autoimagen saludable.';
+          return 'Autoestima alta: percepción saludable de ti mismo.';
+        }
+      },
+      resiliencia: {
+        title: '🛡️ Test de Resiliencia (CD-RISC)',
+        questions: [
+          'Puedo adaptarme a los cambios con rapidez.',
+          'Veo el lado positivo incluso en situaciones difíciles.',
+          'Mantengo la calma bajo presión.',
+          'Puedo tomar decisiones efectivas en momentos difíciles.',
+          'Tengo confianza en mi capacidad para enfrentar problemas.',
+          'Me recupero rápidamente de decepciones.',
+          'Encuentro maneras de crecer a partir de las dificultades.',
+          'Mantengo una actitud positiva incluso cuando las cosas van mal.',
+          'Soy capaz de seguir adelante después de fracasos.',
+          'Sé cuándo pedir ayuda y hacerlo me fortalece.'
+        ],
+        evaluate: score => {
+          if (score <= 25) return 'Resiliencia baja: considera estrategias de afrontamiento para fortalecer la resiliencia.';
+          if (score <= 35) return 'Resiliencia moderada: apoyando tus habilidades de adaptación.';
+          return 'Resiliencia alta: adaptabilidad y fortaleza ante la adversidad.';
+        }
+      }
+    };
 
+    // Estado de la prueba
+    let currentTest = null;
     let currentIndex = 0;
-    const answers = [];
+    let answers = [];
+
+    // Referencias al DOM
+    const menuCard = document.getElementById('menuCard');
+    const testCard = document.getElementById('testCard');
+    const testTitle = document.getElementById('testTitle');
     const questionContainer = document.getElementById('questionContainer');
     const nextBtn = document.getElementById('nextBtn');
-    const form = document.getElementById('testForm');
     const progressBar = document.getElementById('progressBar');
+    const finalSection = document.getElementById('finalSection');
+    const paymentSection = document.getElementById('paymentSection');
 
-    function showQuestion(index) {
-      questionContainer.innerHTML = `
-        <label class="form-label">${preguntas[index]}</label>
-        <select class="form-select" id="answer">
-          <option value="1">Nunca</option>
-          <option value="2">Rara vez</option>
-          <option value="3">A veces</option>
-          <option value="4">A menudo</option>
-          <option value="5">Siempre</option>
-        </select>
-      `;
-      progressBar.style.width = `${(index / preguntas.length) * 100}%`;
+    // Inicialización de listeners
+    document.querySelectorAll('#menuCard button[data-test]').forEach(btn => {
+      btn.addEventListener('click', () => initTest(btn.getAttribute('data-test')));
+    });
+
+    nextBtn.addEventListener('click', nextQuestion);
+    document.getElementById('testForm').addEventListener('submit', sendResults);
+
+    /**
+     * Inicia el test seleccionado
+     */
+    function initTest(testKey) {
+      currentTest = TESTS[testKey];
+      currentIndex = 0;
+      answers = [];
+      testTitle.textContent = currentTest.title;
+      menuCard.classList.add('d-none');
+      testCard.classList.remove('d-none');
+      showQuestion();
     }
 
-    nextBtn.addEventListener('click', () => {
-      const selected = document.getElementById('answer').value;
-      answers.push(parseInt(selected));
-      currentIndex++;
-      if (currentIndex < preguntas.length) {
-        showQuestion(currentIndex);
-      } else {
-        nextBtn.classList.add('d-none');
-        document.getElementById('finalSection').classList.remove('d-none');
-        questionContainer.classList.add('d-none');
-        progressBar.style.width = '100%';
-      }
-    });
+    /**
+     * Muestra la pregunta actual y actualiza la barra de progreso
+     */
+    function showQuestion() {
+      questionContainer.innerHTML = `
+        <label class="form-label">${currentTest.questions[currentIndex]}</label>
+        <select class="form-select" id="answer">
+          <option value="1">Muy en desacuerdo</option>
+          <option value="2">En desacuerdo</option>
+          <option value="3">Ni de acuerdo ni en desacuerdo</option>
+          <option value="4">De acuerdo</option>
+          <option value="5">Muy de acuerdo</option>
+        </select>
+      `;
+      progressBar.style.width = `${((currentIndex) / currentTest.questions.length) * 100}%`;
+    }
 
-    form.addEventListener('submit', function(e) {
+    /**
+     * Procesa la respuesta y avanza o muestra la sección final
+     */
+    function nextQuestion() {
+      const val = parseInt(document.getElementById('answer').value);
+      answers.push(val);
+      currentIndex++;
+      if (currentIndex < currentTest.questions.length) {
+        showQuestion();
+      } else {
+        completeTest();
+      }
+    }
+
+    /**
+     * Finaliza el test mostrando el formulario de correo y pago
+     */
+    function completeTest() {
+      nextBtn.classList.add('d-none');
+      questionContainer.classList.add('d-none');
+      finalSection.classList.remove('d-none');
+      progressBar.style.width = '100%';
+    }
+
+    /**
+     * Envía resultados al backend y muestra opción de pago
+     */
+    async function sendResults(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
-      const total = answers.reduce((a, b) => a + b, 0);
-      let resultado = '';
-      if (total <= 50) {
-        resultado = 'Tu perfil muestra bajo desarrollo estoico. Podrías beneficiarte de reflexionar sobre tus reacciones y tu aceptación del mundo tal como es.';
-      } else if (total <= 70) {
-        resultado = 'Tienes una base moderada de principios estoicos. Estás en el camino hacia mayor equilibrio interior.';
-      } else {
-        resultado = 'Demuestras un alto alineamiento con valores estoicos como autodominio, razón y aceptación.';
+      const total = answers.reduce((sum, v) => sum + v, 0);
+      const feedback = currentTest.evaluate(total);
+
+      try {
+        await fetch('https://test-personalidad.onrender.com/send-email', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({email,resultado:feedback})
+        });
+        paymentSection.classList.remove('d-none');
+      } catch (err) {
+        console.error('Error enviando correo:', err);
+        alert('Hubo un error enviando los resultados. Por favor, inténtalo de nuevo.');
       }
-
-      fetch('https://test-personalidad.onrender.com/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, resultado: resultado })
-      });
-
-      document.getElementById('paymentSection').classList.remove('d-none');
-    });
-
-    showQuestion(currentIndex);
+    }
   </script>
 </body>
 </html>
