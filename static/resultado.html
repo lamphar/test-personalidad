@@ -1,76 +1,104 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resultados - MindPath</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:300,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body { background:#F4F9F9; font-family:'Open Sans',sans-serif; }
-    .container { max-width:600px; margin:3rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); text-align:center; }
-    h1 { font-family:'Montserrat',sans-serif; color:#1B2838; margin-bottom:1rem; }
-    .subtitle { font-size:1rem; color:#555; margin-bottom:2rem; }
-    #chartContainer { width:100%; margin-bottom:2rem; }
-    .analysis { text-align:left; margin-bottom:2rem; }
-    .analysis h4 { font-family:'Montserrat',sans-serif; color:#2E8BC0; margin-top:1.5rem; }
-    .analysis p { font-size:1rem; line-height:1.5; }
-    .btn-accent { background-color:#2E8BC0; color:#fff; font-weight:600; border-radius:8px; padding:.75rem 2rem; }
-    .btn-accent:hover { background-color:#196F90; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Tu Perfil en MindPath</h1>
-    <p class="subtitle" id="subtitle">Analizando tus respuestas...</p>
-    <div id="chartContainer"><canvas id="resultChart"></canvas></div>
-    <div class="analysis" id="analysisText"></div>
-    <button class="btn-accent" onclick="descargarPDF()">Descargar Informe en PDF</button>
-  </div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const test = p.get('test') || 'Test';
+  const scores = (p.get('score') || '0').split(',').map(Number);
+  const labels = ['Apertura', 'Responsabilidad', 'Extraversión', 'Amabilidad', 'Neuroticismo'];
 
-  <script>
-    const p = new URLSearchParams(location.search);
-    const score = parseFloat(p.get('score'))||0;
-    const test = p.get('test')||'Test';
-    const max=100;
-    document.getElementById('subtitle').innerText = `Test de ${test} – Puntaje: ${score.toFixed(1)}%`;
-    // Chart
-    const ctx = document.getElementById('resultChart').getContext('2d');
-    new Chart(ctx,{type:'doughnut',data:{labels:['Obtenido','Restante'],datasets:[{data:[score,max-score],backgroundColor:['#2E8BC0','#E2E8F0'],borderWidth:0}]} ,options:{cutout:'60%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});
-    // Analysis
-    const A = document.getElementById('analysisText');
-    function add(title,txt){A.innerHTML+=`<h4>${title}</h4><p>${txt}</p>`;}
-    if(test==='Estoicismo'){
-      if(score<=40) add('Bajo autocontrol','Tus respuestas indican...');
-      else if(score<=70) add('Equilibrio moderado','Muestras entendimiento...');
-      else add('Alto alineamiento','Demuestras fuerte autodominio...');
-    }
-    if(test==='Autoestima'){
-      if(score<=40) add('Autoestima baja','Podrías trabajar ejercicios...');
-      else if(score<=70) add('Autoestima moderada','Estás en buen camino...');
-      else add('Autoestima alta','Tienes una percepción sana...');
-    }
-    if(test==='Resiliencia'){
-      if(score<=40) add('Resiliencia baja','Considera técnicas de afrontamiento...');
-      else if(score<=70) add('Resiliencia moderada','Expresas capacidad de recuperación...');
-      else add('Resiliencia alta','Eres muy resistente ante la adversidad...');
-    }
-    // PDF
-    function descargarPDF(){
-      const { jsPDF } = window.jspdf, pdf=new jsPDF();
-      pdf.setFontSize(18); pdf.text('Informe MindPath',20,20);
-      pdf.setFontSize(12); pdf.text(document.getElementById('subtitle').innerText,20,30);
-      let y=40;
-      document.querySelectorAll('.analysis h4').forEach((h4,i)=>{
-        pdf.setFontSize(14); pdf.text(h4.innerText,20,y); y+=8;
-        pdf.setFontSize(11);
-        const txt=document.querySelectorAll('.analysis p')[i].innerText;
-        pdf.text(pdf.splitTextToSize(txt,170),20,y); y+=txt.length/50*8+5;
-      });
-      pdf.save(`MindPath_${test}_Informe.pdf`);
-    }
-  </script>
-</body>
-</html>
+  const subtitle = document.getElementById('subtitle');
+  subtitle.innerText = test === 'Big Five' ? 'Test de Personalidad – Big Five' : `Test de ${test}`;
+
+  const ctx = document.getElementById('resultChart').getContext('2d');
+  let chart;
+  if (test === 'Big Five') {
+    chart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Puntuación',
+          data: scores,
+          backgroundColor: 'rgba(46,139,192,0.2)',
+          borderColor: '#2E8BC0',
+          pointBackgroundColor: '#2E8BC0'
+        }]
+      },
+      options: { scales: { r: { min: 0, max: 100 } } }
+    });
+  } else {
+    const score = scores[0] || 0;
+    chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Obtenido', 'Restante'],
+        datasets: [{ data: [score, 100 - score], backgroundColor: ['#2E8BC0', '#E2E8F0'], borderWidth: 0 }]
+      },
+      options: { cutout: '60%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+    });
+  }
+
+  const A = document.getElementById('analysisText');
+  function add(title, txt) {
+    A.innerHTML += `<h4>${title}</h4><p>${txt}</p>`;
+  }
+
+  if (test === 'Big Five') {
+    const descs = [
+      [
+        'Tienes una mente curiosa, creativa y abierta a nuevas experiencias.',
+        'Muestras una apertura moderada con equilibrio entre curiosidad e interés práctico.',
+        'Prefieres lo familiar y estructuras conocidas más que la novedad.'
+      ],
+      [
+        'Eres muy organizado, confiable y perseverante.',
+        'Tu nivel de responsabilidad es equilibrado, sueles cumplir pero también improvisar.',
+        'Tienes dificultades para estructurar tareas o mantener la disciplina.'
+      ],
+      [
+        'Eres sociable, energético y disfrutas interactuar con los demás.',
+        'Tu extraversión es moderada; te adaptas bien a lo social sin buscarlo intensamente.',
+        'Prefieres ambientes tranquilos y la introspección a lo social.'
+      ],
+      [
+        'Eres empático, amable y considerado con los demás.',
+        'Tienes una amabilidad equilibrada; ayudas a otros pero mantienes límites.',
+        'Tiendes a ser más crítico, directo o desconfiado en relaciones interpersonales.'
+      ],
+      [
+        'Sueles experimentar emociones intensas y cambios de ánimo frecuentes.',
+        'Tienes un equilibrio emocional razonable, con ocasionales momentos de tensión.',
+        'Disfrutas de una gran estabilidad emocional y tolerancia al estrés.'
+      ]
+    ];
+    scores.forEach((val, i) => {
+      const nivel = val >= 70 ? 0 : val >= 40 ? 1 : 2;
+      add(labels[i], descs[i][nivel]);
+    });
+  }
+
+  function descargarPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    pdf.setFontSize(18);
+    pdf.text('Informe MindPath', 20, 20);
+    pdf.setFontSize(12);
+    pdf.text(subtitle.innerText, 20, 30);
+
+    // Exportar gráfico
+    const canvas = document.getElementById('resultChart');
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', 50, 40, 110, 60);
+
+    let y = 110;
+    document.querySelectorAll('.analysis h4').forEach((h4, i) => {
+      pdf.setFontSize(14);
+      pdf.text(h4.innerText, 20, y);
+      y += 8;
+      pdf.setFontSize(11);
+      const txt = document.querySelectorAll('.analysis p')[i].innerText;
+      const lines = pdf.splitTextToSize(txt, 170);
+      pdf.text(lines, 20, y);
+      y += lines.length * 6 + 4;
+    });
+    pdf.save(`MindPath_${test}_Informe.pdf`);
+  }
+</script>
