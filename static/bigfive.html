@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Big Five - MindPath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:300,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background:#F4F9F9; font-family:'Open Sans',sans-serif; }
+    .container { max-width:720px; margin:3rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    h2 { font-family:'Montserrat',sans-serif; color:#1B2838; margin-bottom:1.5rem; }
+    .progress { height:20px; margin-bottom:1.5rem; }
+    .btn-option { display:block; width:100%; margin-bottom:1rem; text-align:left; border-radius:8px; }
+    .btn-next { background-color:#2E8BC0; color:#fff; border:none; border-radius:8px; padding:.75rem 1.5rem; }
+    .btn-next:disabled { background-color:#94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="testTitle">Test de Personalidad - Big Five</h2>
+    <div class="progress">
+      <div class="progress-bar bg-info" id="progressBar" style="width:0%"></div>
+    </div>
+    <div id="questionText"></div>
+    <div id="options"></div>
+    <div class="text-end">
+      <button id="nextBtn" class="btn-next" disabled>Siguiente</button>
+    </div>
+  </div>
+
+  <script>
+    const TEST = {
+      key: 'Big Five',
+      questions: [
+        // Apertura
+        'Disfruto aprender cosas nuevas.',
+        'Me interesa el arte y la cultura.',
+        'Me gustan las ideas originales.',
+        'Me interesa explorar nuevas formas de pensar.',
+        'Tengo una imaginación activa.',
+        'Evito rutinas siempre que puedo.',
+        'Me atraen los retos intelectuales.',
+        'Me gusta leer sobre temas complejos.',
+        'Me siento cómodo con la ambigüedad.',
+        'Me considero una persona creativa.',
+        // Responsabilidad
+        'Hago planes y los sigo cuidadosamente.',
+        'Termino mis tareas a tiempo.',
+        'Soy organizado con mis responsabilidades.',
+        'Me esfuerzo por ser puntual.',
+        'Me considero confiable.',
+        'Soy descuidado con mis cosas.',
+        'Suelo olvidar mis compromisos.',
+        'Me cuesta mantener el orden.',
+        'Trabajo duro incluso sin supervisión.',
+        'Cumplo lo que prometo.',
+        // Extraversión
+        'Me siento cómodo en reuniones sociales.',
+        'Me gusta estar rodeado de gente.',
+        'Hablo con facilidad con desconocidos.',
+        'Me entusiasmo fácilmente.',
+        'Disfruto ser el centro de atención.',
+        'Prefiero estar solo la mayor parte del tiempo.',
+        'Evito las actividades sociales.',
+        'Me cuesta expresar emociones positivas.',
+        'Suelo tomar la iniciativa en los grupos.',
+        'Me divierte conocer nuevas personas.',
+        // Amabilidad
+        'Me preocupo por los demás.',
+        'Soy compasivo con quien sufre.',
+        'Intento cooperar más que competir.',
+        'Me cuesta decir cosas hirientes.',
+        'Me esfuerzo por ser considerado.',
+        'Suelo tener conflictos con otros.',
+        'Me irrito fácilmente con las personas.',
+        'Actúo con frialdad incluso con amigos.',
+        'Soy paciente con las personas difíciles.',
+        'Suelo perdonar con facilidad.',
+        // Neuroticismo
+        'Me preocupo con frecuencia.',
+        'Me altero con facilidad.',
+        'Me siento inseguro en muchas situaciones.',
+        'Me cuesta relajarme.',
+        'A menudo me siento triste.',
+        'Mantengo la calma incluso bajo presión.',
+        'Rara vez pierdo los estribos.',
+        'Me siento emocionalmente estable.',
+        'Me alteran los pequeños detalles.',
+        'Me siento abrumado por mis emociones.'
+      ]
+    };
+    const OPTIONS = [
+      { label:'Muy en desacuerdo', value:1 },
+      { label:'En desacuerdo', value:2 },
+      { label:'Ni de acuerdo ni en desacuerdo', value:3 },
+      { label:'De acuerdo', value:4 },
+      { label:'Muy de acuerdo', value:5 }
+    ];
+    let current = 0, score = 0;
+    const qText = document.getElementById('questionText'),
+          opts = document.getElementById('options'),
+          nxt = document.getElementById('nextBtn'),
+          prog = document.getElementById('progressBar');
+    function loadQ(){
+      qText.innerHTML = `<p style="font-weight:600;">${TEST.questions[current]}</p>`;
+      opts.innerHTML = ''; nxt.disabled = true;
+      OPTIONS.forEach(opt=>{
+        const b=document.createElement('button');
+        b.className='btn btn-outline-primary btn-option';
+        b.innerText=opt.label;
+        b.onclick=()=>{
+          score+=opt.value;
+          document.querySelectorAll('.btn-option').forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          nxt.disabled=false;
+        };
+        opts.appendChild(b);
+      });
+      prog.style.width = ((current/TEST.questions.length)*100)+'%';
+    }
+    nxt.onclick = ()=>{
+      current++;
+      if(current<TEST.questions.length) loadQ();
+      else {
+        const pct=((score/(TEST.questions.length*5))*100).toFixed(1);
+        location.href = `resultado.html?test=${encodeURIComponent(TEST.key)}&score=${pct}`;
+      }
+    };
+    loadQ();
+  </script>
+</body>
+</html>
