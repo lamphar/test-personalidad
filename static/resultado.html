@@ -4,53 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resultados - MindPath</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:300,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body {
-      background-color: #F4F9F9;
-      font-family: 'Open Sans', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .result-box {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      text-align: center;
-      max-width: 500px;
-    }
-    .result-box h1 {
-      font-family: 'Montserrat', sans-serif;
-      color: #1B2838;
-      margin-bottom: 1rem;
-    }
-    .result-box p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-    .btn-accent {
-      background-color: #2E8BC0;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 8px;
-      padding: 0.75rem 2rem;
-    }
-    .btn-accent:hover {
-      background-color: #1F6F99;
-    }
+    body { background:#F4F9F9; font-family:'Open Sans',sans-serif; }
+    .container { max-width:600px; margin:3rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); text-align:center; }
+    h1 { font-family:'Montserrat',sans-serif; color:#1B2838; margin-bottom:1rem; }
+    .subtitle { font-size:1rem; color:#555; margin-bottom:2rem; }
+    #chartContainer { width:100%; margin-bottom:2rem; }
+    .analysis { text-align:left; margin-bottom:2rem; }
+    .analysis h4 { font-family:'Montserrat',sans-serif; color:#2E8BC0; margin-top:1.5rem; }
+    .analysis p { font-size:1rem; line-height:1.5; }
+    .btn-accent { background-color:#2E8BC0; color:#fff; font-weight:600; border-radius:8px; padding:.75rem 2rem; }
+    .btn-accent:hover { background-color:#196F90; }
   </style>
 </head>
 <body>
-  <div class="result-box">
-    <h1>Gracias por completar el test</h1>
-    <p>Tu resultado ha sido registrado con éxito.</p>
-    <p>Para recibir tu informe detallado en PDF y apoyar nuestro proyecto, te invitamos a realizar una aportación simbólica de <strong>0.50€</strong>.</p>
-    <a href="https://buy.stripe.com/testpage" class="btn btn-accent" target="_blank">Hacer mi aportación</a>
-    <p class="text-muted mt-3" style="font-size: 0.9rem;">Una vez confirmado el pago, recibirás automáticamente tu resultado por correo electrónico.</p>
+  <div class="container">
+    <h1>Tu Perfil en MindPath</h1>
+    <p class="subtitle" id="subtitle">Analizando tus respuestas...</p>
+    <div id="chartContainer"><canvas id="resultChart"></canvas></div>
+    <div class="analysis" id="analysisText"></div>
+    <button class="btn-accent" onclick="descargarPDF()">Descargar Informe en PDF</button>
   </div>
+
+  <script>
+    const p = new URLSearchParams(location.search);
+    const score = parseFloat(p.get('score'))||0;
+    const test = p.get('test')||'Test';
+    const max=100;
+    document.getElementById('subtitle').innerText = `Test de ${test} – Puntaje: ${score.toFixed(1)}%`;
+    // Chart
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    new Chart(ctx,{type:'doughnut',data:{labels:['Obtenido','Restante'],datasets:[{data:[score,max-score],backgroundColor:['#2E8BC0','#E2E8F0'],borderWidth:0}]} ,options:{cutout:'60%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+    // Analysis
+    const A = document.getElementById('analysisText');
+    function add(title,txt){A.innerHTML+=`<h4>${title}</h4><p>${txt}</p>`;}
+    if(test==='Estoicismo'){
+      if(score<=40) add('Bajo autocontrol','Tus respuestas indican...');
+      else if(score<=70) add('Equilibrio moderado','Muestras entendimiento...');
+      else add('Alto alineamiento','Demuestras fuerte autodominio...');
+    }
+    if(test==='Autoestima'){
+      if(score<=40) add('Autoestima baja','Podrías trabajar ejercicios...');
+      else if(score<=70) add('Autoestima moderada','Estás en buen camino...');
+      else add('Autoestima alta','Tienes una percepción sana...');
+    }
+    if(test==='Resiliencia'){
+      if(score<=40) add('Resiliencia baja','Considera técnicas de afrontamiento...');
+      else if(score<=70) add('Resiliencia moderada','Expresas capacidad de recuperación...');
+      else add('Resiliencia alta','Eres muy resistente ante la adversidad...');
+    }
+    // PDF
+    function descargarPDF(){
+      const { jsPDF } = window.jspdf, pdf=new jsPDF();
+      pdf.setFontSize(18); pdf.text('Informe MindPath',20,20);
+      pdf.setFontSize(12); pdf.text(document.getElementById('subtitle').innerText,20,30);
+      let y=40;
+      document.querySelectorAll('.analysis h4').forEach((h4,i)=>{
+        pdf.setFontSize(14); pdf.text(h4.innerText,20,y); y+=8;
+        pdf.setFontSize(11);
+        const txt=document.querySelectorAll('.analysis p')[i].innerText;
+        pdf.text(pdf.splitTextToSize(txt,170),20,y); y+=txt.length/50*8+5;
+      });
+      pdf.save(`MindPath_${test}_Informe.pdf`);
+    }
+  </script>
 </body>
 </html>

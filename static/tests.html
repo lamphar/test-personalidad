@@ -3,121 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cuestionarios | MindPath</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+  <title>Test Interactivos - MindPath</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:300,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
-    body {
-      background-color: #F4F9F9;
-      font-family: 'Open Sans', sans-serif;
-    }
-    .container {
-      max-width: 720px;
-      margin-top: 3rem;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    }
-    h2 {
-      font-family: 'Montserrat', sans-serif;
-      color: #1B2838;
-      margin-bottom: 1.5rem;
-    }
-    .question {
-      margin-bottom: 2rem;
-    }
-    .progress {
-      height: 20px;
-      margin-bottom: 1.5rem;
-    }
-    .btn-option {
-      display: block;
-      width: 100%;
-      margin-bottom: 1rem;
-      text-align: left;
-    }
+    body { background: #F4F9F9; font-family: 'Open Sans', sans-serif; }
+    .container { max-width:720px; margin:3rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    h2 { font-family:'Montserrat',sans-serif; color:#1B2838; margin-bottom:1.5rem; }
+    .progress { height:20px; margin-bottom:1.5rem; }
+    .btn-option { display:block; width:100%; margin-bottom:1rem; text-align:left; border-radius:8px; }
+    .btn-next { background-color:#2E8BC0; color:#fff; border:none; border-radius:8px; padding:.75rem 1.5rem; }
+    .btn-next:disabled { background-color:#94a3b8; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2 id="testTitle">Test de Estoicismo</h2>
     <div class="progress">
-      <div class="progress-bar bg-info" id="progressBar" style="width: 0%"></div>
+      <div class="progress-bar bg-info" id="progressBar" style="width:0%"></div>
     </div>
-    <div class="question">
-      <p id="questionText"></p>
-      <div id="options"></div>
+    <div id="questionText"></div>
+    <div id="options"></div>
+    <div class="text-end">
+      <button id="nextBtn" class="btn-next" disabled>Siguiente</button>
     </div>
-    <button id="nextBtn" class="btn btn-primary" disabled>Siguiente</button>
   </div>
 
   <script>
-    const preguntas = [
-      "Puedo mantener la calma bajo presión.",
-      "Acepto lo que no puedo controlar.",
-      "Mis emociones no dictan mis acciones.",
-      "Reflexiono antes de reaccionar.",
-      "Acepto críticas sin alterarme."
+    const TEST = {
+      key: 'Estoicismo',
+      questions: [
+        'Puedo mantener la calma bajo presión.',
+        'Acepto sin resistencia lo que no puedo controlar.',
+        'Reflexiono antes de reaccionar emocionalmente.',
+        'Me esfuerzo por vivir según mis valores.',
+        'Encuentro sentido en aceptar el presente.'
+      ]
+    };
+    const OPTIONS = [
+      { label:'Totalmente en desacuerdo', value:0 },
+      { label:'En desacuerdo', value:1 },
+      { label:'Neutral', value:2 },
+      { label:'De acuerdo', value:3 },
+      { label:'Totalmente de acuerdo', value:4 }
     ];
-
-    const opciones = [
-      { texto: "Totalmente en desacuerdo", valor: 0 },
-      { texto: "En desacuerdo", valor: 1 },
-      { texto: "Neutral", valor: 2 },
-      { texto: "De acuerdo", valor: 3 },
-      { texto: "Totalmente de acuerdo", valor: 4 }
-    ];
-
-    let preguntaActual = 0;
-    let puntaje = 0;
-    let seleccionado = null;
-
-    function cargarPregunta() {
-      document.getElementById('questionText').innerText = preguntas[preguntaActual];
-      const optionsDiv = document.getElementById('options');
-      optionsDiv.innerHTML = '';
-      document.getElementById('nextBtn').disabled = true;
-
-      opciones.forEach((op, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-outline-secondary btn-option';
-        btn.innerText = op.texto;
-        btn.onclick = () => {
-          seleccionado = op.valor;
-          document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById('nextBtn').disabled = false;
+    let current=0, score=0;
+    const qText = document.getElementById('questionText'),
+          opts = document.getElementById('options'),
+          nxt = document.getElementById('nextBtn'),
+          prog = document.getElementById('progressBar');
+    document.getElementById('testTitle').innerText = `Test de ${TEST.key}`;
+    function loadQ(){
+      qText.innerHTML = `<p style="font-weight:600;">${TEST.questions[current]}</p>`;
+      opts.innerHTML = ''; nxt.disabled = true;
+      OPTIONS.forEach(opt=>{
+        const b=document.createElement('button');
+        b.className='btn btn-outline-primary btn-option';
+        b.innerText=opt.label;
+        b.onclick=()=>{
+          score+=opt.value;
+          document.querySelectorAll('.btn-option').forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          nxt.disabled=false;
         };
-        optionsDiv.appendChild(btn);
+        opts.appendChild(b);
       });
-
-      document.getElementById('progressBar').style.width = `${(preguntaActual / preguntas.length) * 100}%`;
+      prog.style.width = ((current/TEST.questions.length)*100)+'%';
     }
-
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      puntaje += seleccionado;
-      preguntaActual++;
-      if (preguntaActual < preguntas.length) {
-        cargarPregunta();
-      } else {
-        const email = localStorage.getItem('usuario') || 'anonimo@mindpath.org';
-        fetch('https://tu-backend.com/api/guardar_resultado', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            test: 'Estoicismo',
-            email,
-            score: (puntaje / (preguntas.length * 4)) * 100,
-            date: new Date().toISOString()
-          })
-        });
-        alert(`Test finalizado. Puntaje: ${(puntaje / (preguntas.length * 4) * 100).toFixed(1)}%. Recibirás el resultado al confirmar tu aportación.`);
-        window.location.href = 'resultado.html';
+    nxt.onclick = ()=>{
+      current++;
+      if(current<TEST.questions.length) loadQ();
+      else {
+        const pct=((score/(TEST.questions.length*4))*100).toFixed(1);
+        location.href = `resultado.html?test=${encodeURIComponent(TEST.key)}&score=${pct}`;
       }
-    });
-
-    cargarPregunta();
+    };
+    loadQ();
   </script>
 </body>
 </html>
