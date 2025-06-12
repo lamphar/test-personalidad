@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: test-personalidad-api
+    name: test-personalidad
     env: python
-    buildCommand: ""
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "python app.py"
     envVars:
       - key: SENDGRID_API_KEY
-        value: TU_API_KEY_AQUI
+        value: TU_CLAVE_DE_SENDGRIDhttps://api.render.com/deploy/srv-d0bjrcbuibrs73ddv6ag?key=jag2VQ3i2hw

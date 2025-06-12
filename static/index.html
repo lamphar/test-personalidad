@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MindPath | Pruebas Científicas y Resultados Gated</title>
+  <title>MindPath | Pruebas Científicas</title>
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
   <style>
     :root {
@@ -18,159 +21,175 @@
     }
     body { margin:0; font-family:'Open Sans',sans-serif; background:var(--light-bg); color:var(--text-dark); }
     h1,h2,h3 { font-family:'Montserrat',sans-serif; color:var(--primary); }
+    /* Sticky Navbar */
     .navbar { background:var(--card-bg); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .navbar.sticky-top { position:sticky; top:0; z-index:1020; }
     .navbar-brand { font-weight:700; font-size:1.5rem; color:var(--primary)!important; }
     .nav-link { color:var(--primary); padding:.75rem 1rem; }
     .nav-link.active { border-bottom:3px solid var(--accent); font-weight:600; }
-    .hero { background:linear-gradient(135deg,#FFFFFF,var(--light-bg)); padding:6rem 2rem; text-align:center; }
+    /* Hero */
+    .hero { display:flex; align-items:center; justify-content:space-between; padding:6rem 2rem; background:linear-gradient(135deg,#FFFFFF,var(--light-bg)); }
+    .hero-text { max-width:50%; }
     .hero h1 { font-size:3.5rem; margin-bottom:1rem; }
     .hero p { font-size:1.25rem; font-weight:300; margin-bottom:2rem; color:var(--text-light); }
     .btn-accent { background:var(--accent); color:#FFF; padding:.75rem 1.75rem; font-weight:600; border:none; border-radius:8px; transition:.3s; }
     .btn-accent:hover { background:#0f7467; }
+    .hero-img img { max-width:100%; height:auto; }
+    /* Sections */
     .section { padding:4rem 2rem; }
     .section-title { text-align:center; margin-bottom:2rem; font-size:2.25rem; }
-    .tab-content .card { background:var(--card-bg); border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.1); padding:2rem; }
+    /* Tabs content */
+    .tab-content .card { background:var(--card-bg); border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.1); padding:2rem; margin-bottom:2rem; }
     .card h4 { margin-top:1rem; }
     .card p { color:var(--text-light); font-size:1rem; line-height:1.6; }
     .card ul { list-style:none; padding:0; margin-top:1rem; }
     .card ul li { padding:.5rem 0; display:flex; align-items:flex-start; }
     .card ul li::before { content:'✔️'; margin-right:.75rem; }
     .card small { display:block; margin-top:1rem; color:var(--text-light); }
+    /* How it works */
+    .process .icon { font-size:2.5rem; color:var(--accent); margin-bottom:1rem; }
+    /* Footer */
     footer { background:var(--card-bg); text-align:center; padding:2rem; font-size:.875rem; border-top:1px solid #E2E8F0; }
     footer a { color:var(--primary); margin:0 .5rem; text-decoration:none; }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg">
+  <!-- Sticky Navbar -->
+  <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
       <a class="navbar-brand" href="#">MindPath</a>
-      <ul class="nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#about">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link active" href="#tests">Pruebas</a></li>
-        <li class="nav-item"><a class="nav-link" href="#how">Cómo Funciona</a></li>
-        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Mi Cuenta</a></li>
-      </ul>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#about">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#benefits">Beneficios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tests">Tests</a></li>
+          <li class="nav-item"><a class="btn btn-accent ms-3" href="login.html">Iniciar Sesión</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
+  <!-- Hero -->
   <section class="hero">
-    <div class="container">
-      <h1>Libera tu potencial interior</h1>
-      <p>Tests breves y rigurosos, basados en estudios científicos, para un autoanálisis profundo y profesional.</p>
-      <button class="btn-accent" onclick="location.href='#tests'">Ver Pruebas Científicas</button>
+    <div class="hero-text">
+      <h1>Descubre tu mente, impulsa tu crecimiento</h1>
+      <p>Realiza pruebas científicas validadas para medir tu autocontrol, autoestima y resiliencia. Resultados detallados con recomendaciones prácticas.</p>
+      <button class="btn-accent" onclick="location.href='#tests'">Ver Tests</button>
+    </div>
+    <div class="hero-img">
+      <img src="https://cdn-icons-png.flaticon.com/512/3321/3321901.png" alt="Ilustración de cerebro" />
     </div>
   </section>
 
-  <section id="about" class="section bg-white">
+  <!-- Beneficios -->
+  <section id="benefits" class="section bg-white">
     <div class="container">
-      <h2 class="section-title">¿Qué es MindPath?</h2>
-      <p class="mx-auto" style="max-width:700px; color:var(--text-light);">En MindPath combinamos la experiencia académica con tecnología ágil para ofrecerte pruebas validadas que miden tu autocontrol, autoestima y resiliencia. Cada prueba se fundamenta en investigaciones peer-reviewed y está diseñada para arrojar insights procesables.</p>
+      <h2 class="section-title">Beneficios Profesionales</h2>
+      <div class="row text-center g-4">
+        <div class="col-md-3">
+          <i class="bi bi-clock-history" style="font-size:2rem;color:var(--accent);"></i>
+          <h5>Rápido</h5>
+          <p>Menos de 5 minutos por prueba.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-shield-lock-fill" style="font-size:2rem;color:var(--accent);"></i>
+          <h5>Confidencial</h5>
+          <p>Tus datos siempre protegidos.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-bar-chart-line-fill" style="font-size:2rem;color:var(--accent);"></i>
+          <h5>Analítico</h5>
+          <p>Gráficas y reportes profesionales.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-file-earmark-pdf-fill" style="font-size:2rem;color:var(--accent);"></i>
+          <h5>Descargable</h5>
+          <p>Informe en PDF tras aporte simbólico.</p>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- Pruebas con pestañas -->
   <section id="tests" class="section">
     <div class="container">
-      <h2 class="section-title">Pruebas Científicas</h2>
+      <h2 class="section-title">Tests Científicos</h2>
       <ul class="nav nav-tabs justify-content-center mb-4" id="testTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="tab-estoicismo" data-bs-toggle="tab" data-bs-target="#pane-estoicismo">Estoicismo</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-autoestima" data-bs-toggle="tab" data-bs-target="#pane-autoestima">Autoestima</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-resiliencia" data-bs-toggle="tab" data-bs-target="#pane-resiliencia">Resiliencia</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="tab-bigfive" data-bs-toggle="tab" data-bs-target="#pane-bigfive">Personalidad Big Five</button>
-        </li>
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#estoicismo">Estoicismo</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#autoestima">Autoestima</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#resiliencia">Resiliencia</button></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane fade show active" id="pane-estoicismo">
+        <div class="tab-pane fade show active" id="estoicismo">
           <div class="card">
             <h4>Test de Estoicismo</h4>
-            <p>Evaluamos tu capacidad de autocontrol y aceptación de eventos externos, basados en la escala validada de Smith et al. (2020).</p>
+            <p>20 preguntas basadas en filosofía y psicología positiva, validadas por Smith et al. (2020).</p>
             <ul>
-              <li>20 preguntas con escala Likert.</li>
-              <li>Tiempo: ~5 minutos.</li>
-              <li>Validez test-retest: r=0.85¹.</li>
-              <li>Confiabilidad interna α=0.88².</li>
+              <li>Validez test-retest: r = 0.85</li>
+              <li>Confiabilidad interna: α = 0.88</li>
+              <li>Tiempo estimado: 5 minutos</li>
             </ul>
-            <small>¹ Smith, A. & Pérez, L. (2020). <em>Journal of Positive Psychology</em>. ² Jones, B. & Clark, R. (2019). <em>Psychological Assessment</em>.</small>
-            <button class="btn-accent mt-3" onclick="location.href='login.html'">Iniciar Prueba</button>
+            <button class="btn-accent mt-3" onclick="location.href='login.html?test=Estoicismo'">Iniciar Prueba</button>
           </div>
         </div>
-        <div class="tab-pane fade" id="pane-autoestima">
+        <div class="tab-pane fade" id="autoestima">
           <div class="card">
-            <h4>Test de Autoestima (Rosenberg)</h4>
-            <p>La clásica Escala de Rosenberg mide tu autovaloración global con alta confiabilidad en entornos clínicos y educativos.</p>
+            <h4>Test de Autoestima</h4>
+            <p>Escala de Rosenberg, ampliamente usada en estudios clínicos.</p>
             <ul>
-              <li>10 ítems en formato afirmativo/negativo.</li>
-              <li>Tiempo: ~3 minutos.</li>
-              <li>Confiabilidad α=0.89-0.92³.</li>
-              <li>Amplio uso en más de 50 estudios.</li>
+              <li>Confiabilidad: α = 0.89-0.92</li>
+              <li>Ítems: 10 afirmaciones</li>
+              <li>Tiempo estimado: 3 minutos</li>
             </ul>
-            <small>³ Rosenberg, M. (1965). <em>Society and the Adolescent Self-Image</em>.</small>
-            <button class="btn-accent mt-3" onclick="location.href='login.html'">Iniciar Prueba</button>
+            <button class="btn-accent mt-3" onclick="location.href='login.html?test=Autoestima'">Iniciar Prueba</button>
           </div>
         </div>
-        <div class="tab-pane fade" id="pane-resiliencia">
+        <div class="tab-pane fade" id="resiliencia">
           <div class="card">
-            <h4>Test de Resiliencia (CD-RISC)</h4>
-            <p>Mide tu capacidad de recuperarte ante la adversidad, adaptado del Connor-Davidson Scale (2003).</p>
+            <h4>Test de Resiliencia</h4>
+            <p>Adaptado del CD-RISC, mide tu capacidad de recuperación ante adversidad.</p>
             <ul>
-              <li>10 ítems basados en CD-RISC.</li>
-              <li>Tiempo: ~4 minutos.</li>
-              <li>Confiabilidad α=0.90⁴.</li>
-              <li>Validez concurrente r=0.78 con bienestar.</li>
+              <li>Confiabilidad interna: α = 0.90</li>
+              <li>Validez concurrente: r = 0.78</li>
+              <li>Tiempo estimado: 4 minutos</li>
             </ul>
-            <small>⁴ Connor, K. & Davidson, J. (2003). <em>Depression and Anxiety</em>.</small>
-            <button class="btn-accent mt-3" onclick="location.href='login.html'">Iniciar Prueba</button>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="pane-bigfive">
-          <div class="card">
-            <h4>Test de Personalidad Big Five</h4>
-            <p>Evalúa tus cinco grandes rasgos de personalidad según el modelo OCEAN validado empíricamente.</p>
-            <ul>
-              <li>50 ítems en formato Likert (1 a 5).</li>
-              <li>Tiempo estimado: 7-8 minutos.</li>
-              <li>Informe detallado por dimensión: Apertura, Responsabilidad, Extraversión, Amabilidad y Neuroticismo.</li>
-            </ul>
-            <small>Basado en el IPIP-NEO-50, con respaldo empírico en estudios revisados por pares.</small>
-            <button class="btn-accent mt-3" onclick="location.href='bigfive.html'">Iniciar Prueba</button>
+            <button class="btn-accent mt-3" onclick="location.href='login.html?test=Resiliencia'">Iniciar Prueba</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Cómo Funciona -->
   <section id="how" class="section bg-white">
     <div class="container">
       <h2 class="section-title">Cómo Funciona</h2>
       <div class="row text-center">
         <div class="col-md-4">
-          <i class="bi bi-list-check" style="font-size:2rem;color:var(--accent);"></i>
-          <h5>1. Selecciona Prueba</h5>
-          <p>Escoge entre estoicismo, autoestima, resiliencia o personalidad.</p>
+          <i class="bi bi-list-check icon"></i>
+          <h5>1. Selección</h5>
+          <p>Escoge el test deseado.</p>
         </div>
         <div class="col-md-4">
-          <i class="bi bi-pen" style="font-size:2rem;color:var(--accent);"></i>
-          <h5>2. Contesta Cuestionario</h5>
-          <p>Responde honestamente en cada ítem.</p>
+          <i class="bi bi-pen icon"></i>
+          <h5>2. Respuesta</h5>
+          <p>Contesta honestamente cada ítem.</p>
         </div>
         <div class="col-md-4">
-          <i class="bi bi-currency-dollar" style="font-size:2rem;color:var(--accent);"></i>
-          <h5>3. Paga y Recibe Informe</h5>
-          <p>Realiza tu aporte simbólico de 0.50€ y accede a tus resultados detallados.</p>
+          <i class="bi bi-currency-dollar icon"></i>
+          <h5>3. Pago y Resultados</h5>
+          <p>Aporta 0.50 € y accede a tu informe completo.</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Footer -->
   <footer>
-    <p>&copy; 2025 MindPath · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></p>
+    <p>&copy; 2025 MindPath · <a href="terminos.html">Términos</a> · <a href="privacidad.html">Política de privacidad</a></p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

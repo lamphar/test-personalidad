@@ -1,45 +1,47 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from flask_cors import CORS
 import os
 
-app = Flask(__name__, static_folder='static', static_url_path='')
-CORS(app)
+app = Flask(__name__)
+CORS(app)  # permite solicitudes desde tu frontend
 
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    return 'API funcionando correctamente.'
 
 @app.route('/send-email', methods=['POST'])
 def send_email():
-    data = request.get_json()
-    email = data.get('email')
-    resultado = data.get('resultado')
-
-    if not email or not resultado:
-        return jsonify({'error': 'Faltan datos'}), 400
-
-    message = Mail(
-        from_email='tucorreo@tuweb.com',  # Cambia a tu correo verificado en SendGrid
-        to_emails=email,
-        subject='Tus resultados del test de personalidad',
-        html_content=f"""
-        <p>Gracias por completar el test.</p>
-        <p><strong>Tu resultado:</strong></p>
-        <p>{resultado}</p>
-        <p>Este resultado es orientativo y no sustituye una evaluación profesional.</p>
-        """
-    )
-
     try:
+        data = request.get_json()
+        email = data.get('email')
+        resultado = data.get('resultado')
+
+        if not email or not resultado:
+            return jsonify({'error': 'Faltan datos'}), 400
+
+        message = Mail(
+            from_email='TU_CORREO_VERIFICADO@tudominio.com',  # Cambia esto por uno verificado en SendGrid
+            to_emails=email,
+            subject='Tus resultados del test de personalidad',
+            html_content=f"""
+                <h2>Gracias por completar el test</h2>
+                <p><strong>Resultado:</strong> {resultado}</p>
+                <p>Este resultado es solo una guía general basada en herramientas científicas, no un diagnóstico clínico.</p>
+            """
+        )
+
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         sg.send(message)
+
         return jsonify({'message': 'Correo enviado correctamente'}), 200
+
     except Exception as e:
+        print(f'Error al enviar correo: {e}')
         return jsonify({'error': str(e)}), 500
 
-# 👇 ESTA LÍNEA ES CRUCIAL para Render
+# Requerido para funcionar en Render.com
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
