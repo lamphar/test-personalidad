@@ -1,83 +1,48 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prueba · MindPath</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" src="tests-data.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba · MindPath</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" rel="stylesheet">
+<script type="module" src="tests-data.js"></script>
 </head>
 <body class="bg-slate-100">
   <div class="max-w-xl mx-auto bg-white rounded-xl shadow p-8 mt-10">
     <h2 id="title" class="text-2xl font-bold mb-4"></h2>
-
     <div class="w-full bg-slate-200 rounded h-3 mb-6">
       <div id="bar" class="h-3 bg-indigo-500 rounded" style="width:0%"></div>
     </div>
-
     <p id="q" class="text-lg font-medium mb-4"></p>
     <div id="opts" class="space-y-2"></div>
-
-    <button id="next" class="w-full mt-6 bg-indigo-600 text-white py-3 rounded disabled:bg-slate-400" disabled>
-      Siguiente
-    </button>
+    <button id="next" class="w-full mt-6 bg-indigo-600 text-white py-3 rounded disabled:bg-slate-400" disabled>Siguiente</button>
   </div>
 
 <script type="module">
 import { TESTS } from "./tests-data.js";
-
 const params = new URLSearchParams(location.search);
-const key = params.get('test');
-const T = TESTS[key];
-
+const key = params.get('test'); const T = TESTS[key];
 document.getElementById('title').textContent = key;
-
-let i = 0, score = 0;
-const bar = document.getElementById('bar'),
-      q   = document.getElementById('q'),
-      opts = document.getElementById('opts'),
-      next = document.getElementById('next');
-
-const scale = [
-  'Totalmente en desacuerdo',
-  'En desacuerdo',
-  'Neutral',
-  'De acuerdo',
-  'Totalmente de acuerdo'
-];
-
-function load() {
-  q.textContent = T.questions[i];
-  opts.innerHTML = '';
-  next.disabled = true;
-
-  scale.forEach((txt, idx) => {
-    const b = document.createElement('button');
-    b.className = 'w-full border rounded p-3 hover:bg-indigo-50';
-    b.textContent = txt;
-    b.onclick = () => {
-      score += idx;
-      document.querySelectorAll('#opts button').forEach(x => x.classList.remove('ring'));
-      b.classList.add('ring', 'ring-indigo-500');
-      next.disabled = false;
-    };
+let i=0, score=0;
+const bar=document.getElementById('bar'), q=document.getElementById('q'), opts=document.getElementById('opts'), next=document.getElementById('next');
+const scale = ['Totalmente en desacuerdo','En desacuerdo','Neutral','De acuerdo','Totalmente de acuerdo'];
+function load(){
+  q.textContent=T.questions[i]; opts.innerHTML=''; next.disabled=true;
+  scale.forEach((txt,idx)=>{
+    const b=document.createElement('button');
+    b.className='w-full border rounded p-3 hover:bg-indigo-50'; b.textContent=txt;
+    b.onclick=()=>{ score+=idx; document.querySelectorAll('#opts button').forEach(x=>x.classList.remove('ring')); b.classList.add('ring','ring-indigo-500'); next.disabled=false;};
     opts.appendChild(b);
   });
-
-  bar.style.width = `${(i / T.questions.length) * 100}%`;
+  bar.style.width=`${(i/T.questions.length)*100}%`;
 }
-
-next.onclick = () => {
-  i++;
-  if (i < T.questions.length) {
-    load();
-  } else {
-    const pct = (score / (T.questions.length * T.scaleMax)) * 100;
-    location.href = `resultado.html?test=${encodeURIComponent(key)}&score=${pct.toFixed(1)}`;
+next.onclick=()=>{
+  i++; if(i<T.questions.length){ load(); } else{
+    const pct=(score/(T.questions.length*T.scaleMax))*100;
+    location.href=`resultado.html?test=${encodeURIComponent(key)}&score=${pct.toFixed(1)}`;
   }
 };
-
 load();
 </script>
 </body>

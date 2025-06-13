@@ -1,40 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceder · MindPath</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceder · MindPath</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-50 flex items-center justify-center h-screen">
   <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
     <h1 class="text-2xl font-bold mb-4 text-center text-indigo-600">Bienvenido a MindPath</h1>
-
     <form id="f" class="space-y-4">
       <input required type="email" id="email" placeholder="Correo electrónico" class="w-full p-3 border rounded">
       <button class="w-full bg-indigo-600 text-white py-3 rounded">Continuar</button>
     </form>
-
-    <button onclick="cont()" class="w-full mt-4 text-sm text-slate-500 underline">
-      Continuar sin correo
-    </button>
+    <button onclick="cont()" class="w-full mt-4 text-sm text-slate-500 underline">Continuar sin correo</button>
   </div>
-
 <script>
-const q = new URLSearchParams(location.search);
-const next = q.get('next') || 'tests.html';
-
-document.getElementById('f').addEventListener('submit', e => {
-  e.preventDefault();
-  localStorage.setItem('usuario', document.getElementById('email').value);
-  location.href = next;
+const q = new URLSearchParams(location.search); const next = q.get('next')||'tests.html';
+document.getElementById('f').addEventListener('submit',e=>{
+  e.preventDefault(); localStorage.setItem('usuario',document.getElementById('email').value); location.href=next;
 });
-
-function cont() {
-  localStorage.setItem('usuario', 'anonimo');
-  location.href = next;
-}
+function cont(){localStorage.setItem('usuario','anonimo'); location.href=next;}
 </script>
 </body>
 </html>

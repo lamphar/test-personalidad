@@ -1,86 +1,47 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resultados · MindPath</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script type="module" src="analysis.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados · MindPath</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="module" src="analysis.js"></script>
 </head>
 <body class="bg-slate-100">
-  <div class="max-w-xl mx-auto bg-white rounded-xl shadow p-8 mt-10 text-center">
-    <h1 class="text-2xl font-bold mb-4">Tu informe</h1>
-    <p id="msg" class="text-slate-600 mb-6"></p>
-
-    <!-- Botón de pago -->
-    <button id="pay" class="bg-indigo-600 text-white px-6 py-3 rounded">
-      Pagar 0,50 € y ver resultados
-    </button>
-
-    <!-- Gráfico -->
-    <canvas id="chart" class="my-8 hidden"></canvas>
-
-    <!-- Análisis -->
-    <div id="analysis" class="text-left space-y-4 hidden"></div>
-
-    <!-- PDF -->
-    <button id="pdf" class="bg-teal-500 text-white px-6 py-3 rounded hidden">
-      Descargar PDF
-    </button>
-  </div>
+<div class="max-w-xl mx-auto bg-white rounded-xl shadow p-8 mt-10 text-center">
+  <h1 class="text-2xl font-bold mb-4">Tu informe</h1>
+  <p id="msg" class="text-slate-600 mb-6"></p>
+  <button id="pay" class="bg-indigo-600 text-white px-6 py-3 rounded">Pagar 0,50 € y ver resultados</button>
+  <canvas id="chart" class="my-8 hidden"></canvas>
+  <div id="analysis" class="text-left space-y-4 hidden"></div>
+  <button id="pdf" class="bg-teal-500 text-white px-6 py-3 rounded hidden">Descargar PDF</button>
+</div>
 
 <script type="module">
 import { analyse } from "./analysis.js";
-
-const stripe = Stripe("pk_test_TU_CLAVE_PUBLICA");   //  <-- pon tu clave pública
+const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX"); // publica
 const p = new URLSearchParams(location.search);
-const score = parseFloat(p.get('score'));
-const test  = p.get('test');
-
-document.getElementById('msg').textContent =
-  `${test} completado. Puntaje preliminar: ${score.toFixed(1)} %.`;
-
-document.getElementById('pay').onclick = async () => {
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ test, score })
-  });
-  const { sessionId } = await res.json();
-  await stripe.redirectToCheckout({ sessionId });
+const score=parseFloat(p.get('score')); const test=p.get('test');
+document.getElementById('msg').textContent=`${test} completado. Puntaje preliminar: ${score.toFixed(1)} %.`;
+document.getElementById('pay').onclick=async()=>{
+  const res = await fetch('/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({test,score})});
+  const {sessionId}=await res.json();
+  await stripe.redirectToCheckout({sessionId});
 };
-
-/* Mostrar resultados si viene ?session_id */
-if (p.get('session_id')) {
+if(p.get('session_id')){ // pago confirmado
   document.getElementById('pay').classList.add('hidden');
-  document.getElementById('msg').textContent = `Resultados finales para ${test}`;
-
-  /* Gráfico */
+  document.getElementById('msg').textContent=`Resultados finales para ${test}`;
+  // Chart
   document.getElementById('chart').classList.remove('hidden');
-  new Chart(document.getElementById('chart'), {
-    type: 'doughnut',
-    data: { labels: ['Obtenido', 'Restante'],
-            datasets: [{ data: [score, 100 - score],
-                         backgroundColor: ['#4F46E5', '#CBD5E1'],
-                         borderWidth: 0 }] },
-    options: { plugins: { legend: { display: false } }, cutout: '70%' }
-  });
-
-  /* Análisis */
-  const insight = analyse(test, score);
-  const box = document.getElementById('analysis');
-  box.classList.remove('hidden');
-  box.innerHTML =
-    `<h3 class="text-xl font-bold" style="color:${insight.color}">${insight.title}</h3>
-     <p>${insight.text}</p>`;
-
-  /* PDF (placeholder sin jsPDF para simplificar) */
+  new Chart(document.getElementById('chart'),{type:'doughnut',data:{labels:['Obtenido','Restante'],datasets:[{data:[score,100-score],backgroundColor:['#4F46E5','#CBD5E1'],borderWidth:0}]},options:{plugins:{legend:{display:false}},cutout:'70%'}});
+  // Analysis text
+  const insight = analyse(test,score);
+  const box=document.getElementById('analysis'); box.classList.remove('hidden'); 
+  box.innerHTML=`<h3 class="text-xl font-bold" style="color:${insight.color}">${insight.title}</h3><p>${insight.text}</p>`;
   document.getElementById('pdf').classList.remove('hidden');
-  document.getElementById('pdf').onclick = () =>
-    alert('Función PDF pendiente de integrar jsPDF');
 }
 </script>
 </body>
