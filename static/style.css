@@ -1,0 +1,13 @@
+
+body{
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+/* hero gradient */
+.hp-hero{
+  background: linear-gradient(135deg,#f3f7ff 0%,#e9f7ff 100%);
+}
+.test-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0.5rem 1rem rgba(0,0,0,.15);
+  transition:all .3s;
+}
