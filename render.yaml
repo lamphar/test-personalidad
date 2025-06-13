@@ -1,9 +1,18 @@
+
 services:
   - type: web
-    name: test-personalidad
+    name: mindpath
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python app.py"
     envVars:
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PRICE_50C
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
       - key: SENDGRID_API_KEY
-        value: TU_CLAVE_DE_SENDGRIDhttps://api.render.com/deploy/srv-d0bjrcbuibrs73ddv6ag?key=jag2VQ3i2hw
+        sync: false
+      - key: BASE_URL
+        value: https://test-personalidad.onrender.com

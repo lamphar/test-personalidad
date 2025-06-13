@@ -1,4 +1,5 @@
+
 flask
-sendgrid
-python-dotenv
 flask-cors
+stripe
+sendgrid

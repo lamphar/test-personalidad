@@ -1,84 +1,49 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Interactivos - MindPath</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans:300,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body { background: #F4F9F9; font-family: 'Open Sans', sans-serif; }
-    .container { max-width:720px; margin:3rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
-    h2 { font-family:'Montserrat',sans-serif; color:#1B2838; margin-bottom:1.5rem; }
-    .progress { height:20px; margin-bottom:1.5rem; }
-    .btn-option { display:block; width:100%; margin-bottom:1rem; text-align:left; border-radius:8px; }
-    .btn-next { background-color:#2E8BC0; color:#fff; border:none; border-radius:8px; padding:.75rem 1.5rem; }
-    .btn-next:disabled { background-color:#94a3b8; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba · MindPath</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" rel="stylesheet">
+<script type="module" src="tests-data.js"></script>
 </head>
-<body>
-  <div class="container">
-    <h2 id="testTitle">Test de Estoicismo</h2>
-    <div class="progress">
-      <div class="progress-bar bg-info" id="progressBar" style="width:0%"></div>
+<body class="bg-slate-100">
+  <div class="max-w-xl mx-auto bg-white rounded-xl shadow p-8 mt-10">
+    <h2 id="title" class="text-2xl font-bold mb-4"></h2>
+    <div class="w-full bg-slate-200 rounded h-3 mb-6">
+      <div id="bar" class="h-3 bg-indigo-500 rounded" style="width:0%"></div>
     </div>
-    <div id="questionText"></div>
-    <div id="options"></div>
-    <div class="text-end">
-      <button id="nextBtn" class="btn-next" disabled>Siguiente</button>
-    </div>
+    <p id="q" class="text-lg font-medium mb-4"></p>
+    <div id="opts" class="space-y-2"></div>
+    <button id="next" class="w-full mt-6 bg-indigo-600 text-white py-3 rounded disabled:bg-slate-400" disabled>Siguiente</button>
   </div>
 
-  <script>
-    const TEST = {
-      key: 'Estoicismo',
-      questions: [
-        'Puedo mantener la calma bajo presión.',
-        'Acepto sin resistencia lo que no puedo controlar.',
-        'Reflexiono antes de reaccionar emocionalmente.',
-        'Me esfuerzo por vivir según mis valores.',
-        'Encuentro sentido en aceptar el presente.'
-      ]
-    };
-    const OPTIONS = [
-      { label:'Totalmente en desacuerdo', value:0 },
-      { label:'En desacuerdo', value:1 },
-      { label:'Neutral', value:2 },
-      { label:'De acuerdo', value:3 },
-      { label:'Totalmente de acuerdo', value:4 }
-    ];
-    let current=0, score=0;
-    const qText = document.getElementById('questionText'),
-          opts = document.getElementById('options'),
-          nxt = document.getElementById('nextBtn'),
-          prog = document.getElementById('progressBar');
-    document.getElementById('testTitle').innerText = `Test de ${TEST.key}`;
-    function loadQ(){
-      qText.innerHTML = `<p style="font-weight:600;">${TEST.questions[current]}</p>`;
-      opts.innerHTML = ''; nxt.disabled = true;
-      OPTIONS.forEach(opt=>{
-        const b=document.createElement('button');
-        b.className='btn btn-outline-primary btn-option';
-        b.innerText=opt.label;
-        b.onclick=()=>{
-          score+=opt.value;
-          document.querySelectorAll('.btn-option').forEach(x=>x.classList.remove('active'));
-          b.classList.add('active');
-          nxt.disabled=false;
-        };
-        opts.appendChild(b);
-      });
-      prog.style.width = ((current/TEST.questions.length)*100)+'%';
-    }
-    nxt.onclick = ()=>{
-      current++;
-      if(current<TEST.questions.length) loadQ();
-      else {
-        const pct=((score/(TEST.questions.length*4))*100).toFixed(1);
-        location.href = `resultado.html?test=${encodeURIComponent(TEST.key)}&score=${pct}`;
-      }
-    };
-    loadQ();
-  </script>
+<script type="module">
+import { TESTS } from "./tests-data.js";
+const params = new URLSearchParams(location.search);
+const key = params.get('test'); const T = TESTS[key];
+document.getElementById('title').textContent = key;
+let i=0, score=0;
+const bar=document.getElementById('bar'), q=document.getElementById('q'), opts=document.getElementById('opts'), next=document.getElementById('next');
+const scale = ['Totalmente en desacuerdo','En desacuerdo','Neutral','De acuerdo','Totalmente de acuerdo'];
+function load(){
+  q.textContent=T.questions[i]; opts.innerHTML=''; next.disabled=true;
+  scale.forEach((txt,idx)=>{
+    const b=document.createElement('button');
+    b.className='w-full border rounded p-3 hover:bg-indigo-50'; b.textContent=txt;
+    b.onclick=()=>{ score+=idx; document.querySelectorAll('#opts button').forEach(x=>x.classList.remove('ring')); b.classList.add('ring','ring-indigo-500'); next.disabled=false;};
+    opts.appendChild(b);
+  });
+  bar.style.width=`${(i/T.questions.length)*100}%`;
+}
+next.onclick=()=>{
+  i++; if(i<T.questions.length){ load(); } else{
+    const pct=(score/(T.questions.length*T.scaleMax))*100;
+    location.href=`resultado.html?test=${encodeURIComponent(key)}&score=${pct.toFixed(1)}`;
+  }
+};
+load();
+</script>
 </body>
 </html>
